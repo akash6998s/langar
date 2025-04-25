@@ -13,6 +13,7 @@ const DonationsTable = () => {
     "July", "August", "September", "October", "November", "December"
   ];
 
+  // Fetch donation and member data on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,12 +32,15 @@ const DonationsTable = () => {
         const currYear = String(now.getFullYear());
         const currMonth = monthNames[now.getMonth()];
 
+        // Set default selected year/month
         if (donationJson[currYear]?.[currMonth]) {
           setSelectedYear(currYear);
           setSelectedMonth(currMonth);
         } else {
-          const firstYear = Object.keys(donationJson)[0];
-          const firstMonth = donationJson[firstYear] ? Object.keys(donationJson[firstYear])[0] : '';
+          const firstYear = Object.keys(donationJson)[0] || '';
+          const firstMonth = donationJson[firstYear]
+            ? Object.keys(donationJson[firstYear])[0]
+            : '';
           setSelectedYear(firstYear);
           setSelectedMonth(firstMonth);
         }
@@ -48,6 +52,7 @@ const DonationsTable = () => {
     fetchData();
   }, []);
 
+  // Update table when year/month/member data changes
   useEffect(() => {
     if (selectedYear && selectedMonth) {
       const monthData = donationData[selectedYear]?.[selectedMonth] || {};
@@ -61,7 +66,7 @@ const DonationsTable = () => {
       setTableData(data);
       setTotalDonations(total);
     }
-  }, [donationData, memberDetails, selectedYear, selectedMonth, monthNames]);
+  }, [donationData, memberDetails, selectedYear, selectedMonth]);
 
   const years = Object.keys(donationData);
   const months = selectedYear ? Object.keys(donationData[selectedYear]) : [];
@@ -73,8 +78,9 @@ const DonationsTable = () => {
           मासिक दान सूची (Monthly Donations)
         </h2>
 
-        {/* Select Year & Month */}
+        {/* Selectors */}
         <div className="flex flex-wrap justify-center gap-6 mb-10">
+          {/* Year Selector */}
           <select
             value={selectedYear}
             onChange={(e) => {
@@ -90,6 +96,7 @@ const DonationsTable = () => {
             ))}
           </select>
 
+          {/* Month Selector */}
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
@@ -103,7 +110,7 @@ const DonationsTable = () => {
           </select>
         </div>
 
-        {/* Total Donations */}
+        {/* Total Donations Display */}
         {tableData.length > 0 && (
           <div className="text-center mb-8">
             <span className="text-xl font-bold text-green-800 bg-green-100 px-6 py-2 rounded-full shadow-sm">
@@ -112,7 +119,7 @@ const DonationsTable = () => {
           </div>
         )}
 
-        {/* Donation Table */}
+        {/* Donations Table */}
         {tableData.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-xl overflow-hidden shadow-sm">
