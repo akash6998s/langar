@@ -12,7 +12,7 @@ const SuperAdmin = () => {
   };
 
   const [attendanceData, setAttendanceData] = useState({
-    attendance: {}, // Using an object to store attendance as key-value pairs (rollNo: true/false)
+    attendance: {},
     month: '',
     year: '',
     day: '',
@@ -30,10 +30,9 @@ const SuperAdmin = () => {
     year: '',
   });
 
-  const [activeSection, setActiveSection] = useState('attendance'); // Default to 'attendance'
-
+  const [activeSection, setActiveSection] = useState('attendance');
   const [showRollNumberPopup, setShowRollNumberPopup] = useState(false);
-  const [availableRollNumbers, setAvailableRollNumbers] = useState([...Array(100).keys()].map(num => (num + 1).toString()));
+  const [availableRollNumbers] = useState([...Array(100).keys()].map(num => (num + 1).toString()));
 
   useEffect(() => {
     const date = new Date();
@@ -65,17 +64,17 @@ const SuperAdmin = () => {
     setAttendanceData((prevData) => ({
       ...prevData,
       [type]: value,
-      day: '1', // Reset day when month or year changes
+      day: '1',
     }));
   };
 
   const handleRollNoClick = (rollNo) => {
     setAttendanceData((prevData) => {
       const newAttendance = { ...prevData.attendance };
-      if (newAttendance[rollNo] === true) {
+      if (newAttendance[rollNo]) {
         delete newAttendance[rollNo];
       } else {
-        newAttendance[rollNo] = true; // Mark as present
+        newAttendance[rollNo] = true;
       }
       return {
         ...prevData,
@@ -86,39 +85,34 @@ const SuperAdmin = () => {
 
   const addAttendance = async () => {
     const { attendance, month, year, day } = attendanceData;
-  
-    // Filter out any false/undefined values from the attendance object
-    const filteredAttendance = Object.keys(attendance).filter(rollNo => attendance[rollNo] === true);
-  
+    const filteredAttendance = Object.keys(attendance).filter(rollNo => attendance[rollNo]);
+
     if (filteredAttendance.length === 0) {
       alert('No Roll Numbers selected.');
       return;
     }
-  
+
     try {
       const response = await axios.post('http://localhost:5000/update-attendance', {
-        attendance: filteredAttendance, // Only send the roll numbers marked as true
+        attendance: filteredAttendance,
         month,
         year: Number(year),
         day: Number(day),
       });
       alert(response.data.message);
-  
+
       setAttendanceData((prev) => ({
         ...prev,
-        attendance: {}, // Reset attendance data after submitting
+        attendance: {},
       }));
     } catch (error) {
       console.error('Error posting attendance:', error);
       alert('Failed to add attendance.');
     }
   };
-  
-  
 
   const addExpense = async () => {
     const { attendance, month, year } = expenseData;
-
     if (!attendance.trim()) {
       alert('Roll Numbers field is required.');
       return;
@@ -126,15 +120,12 @@ const SuperAdmin = () => {
 
     try {
       const response = await axios.post('http://localhost:5000/add-expense', {
-        attendance: attendance.split(',').map((rollNo) => rollNo.trim()),
+        attendance: attendance.split(',').map((r) => r.trim()),
         month,
         year: Number(year),
       });
       alert(response.data.message);
-      setExpenseData((prev) => ({
-        ...prev,
-        attendance: '',
-      }));
+      setExpenseData((prev) => ({ ...prev, attendance: '' }));
     } catch (error) {
       console.error('Error posting expense:', error);
       alert('Failed to add expense.');
@@ -143,7 +134,6 @@ const SuperAdmin = () => {
 
   const addDonation = async () => {
     const { attendance, month, year } = donationData;
-
     if (!attendance.trim()) {
       alert('Roll Numbers field is required.');
       return;
@@ -151,99 +141,72 @@ const SuperAdmin = () => {
 
     try {
       const response = await axios.post('http://localhost:5000/update-donations', {
-        attendance: attendance.split(',').map((rollNo) => rollNo.trim()),
+        attendance: attendance.split(',').map((r) => r.trim()),
         month,
         year: Number(year),
       });
       alert(response.data.message);
-      setDonationData((prev) => ({
-        ...prev,
-        attendance: '',
-      }));
+      setDonationData((prev) => ({ ...prev, attendance: '' }));
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.error) {
-        alert(error.response.data.error);
-      } else {
-        alert('Failed to add donation.');
-      }
+      console.error('Error posting donation:', error);
+      alert('Failed to add donation.');
     }
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto bg-white rounded-xl shadow-md space-y-4">
+    <div className="p-6 max-w-2xl mx-auto bg-white rounded-xl shadow-md space-y-6">
       <h1 className="text-2xl font-bold text-center">SuperAdmin Dashboard</h1>
 
-      {/* Toggle Buttons */}
-      <div className="flex justify-center space-x-4 mb-4">
-        <button
-          onClick={() => setActiveSection('attendance')}
-          className={`px-4 py-2 rounded ${activeSection === 'attendance' ? 'bg-blue-600 text-white' : 'bg-gray-300'}`}
-        >
-          Attendance
-        </button>
-        <button
-          onClick={() => setActiveSection('expense')}
-          className={`px-4 py-2 rounded ${activeSection === 'expense' ? 'bg-blue-600 text-white' : 'bg-gray-300'}`}
-        >
-          Expense
-        </button>
-        <button
-          onClick={() => setActiveSection('donation')}
-          className={`px-4 py-2 rounded ${activeSection === 'donation' ? 'bg-blue-600 text-white' : 'bg-gray-300'}`}
-        >
-          Donation
-        </button>
+      {/* Section Toggle */}
+      <div className="flex justify-center gap-4">
+        {['attendance', 'expense', 'donation'].map(section => (
+          <button
+            key={section}
+            onClick={() => setActiveSection(section)}
+            className={`px-4 py-2 rounded ${activeSection === section ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+          >
+            {section.charAt(0).toUpperCase() + section.slice(1)}
+          </button>
+        ))}
       </div>
 
-      {/* Conditional Rendering of Forms */}
+      {/* Attendance Section */}
       {activeSection === 'attendance' && (
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Add Attendance</h2>
 
-          {/* Year Dropdown */}
           <select
             className="w-full border px-3 py-2 rounded"
             value={attendanceData.year}
             onChange={(e) => handleMonthYearChange('year', e.target.value)}
           >
-            {[...Array(10)].map((_, index) => {
-              const yearOption = new Date().getFullYear() - 5 + index;
-              return (
-                <option key={yearOption} value={yearOption}>
-                  {yearOption}
-                </option>
-              );
+            {[...Array(10)].map((_, i) => {
+              const y = new Date().getFullYear() - 5 + i;
+              return <option key={y} value={y}>{y}</option>;
             })}
           </select>
 
-          {/* Month Dropdown (Text format) */}
           <select
             className="w-full border px-3 py-2 rounded"
             value={attendanceData.month}
             onChange={(e) => handleMonthYearChange('month', e.target.value)}
           >
-            {monthNames.map((monthName) => (
-              <option key={monthName} value={monthName}>
-                {monthName}
-              </option>
+            {monthNames.map(month => (
+              <option key={month} value={month}>{month}</option>
             ))}
           </select>
 
-          {/* Day Dropdown */}
           <select
             className="w-full border px-3 py-2 rounded"
             value={attendanceData.day}
             onChange={(e) => setAttendanceData({ ...attendanceData, day: e.target.value })}
           >
-            {Array.from({ length: daysInMonth(monthNames.indexOf(attendanceData.month) + 1, attendanceData.year) }).map((_, index) => (
-              <option key={index + 1} value={index + 1}>
-                {index + 1}
-              </option>
+            {Array.from({ length: daysInMonth(monthNames.indexOf(attendanceData.month) + 1, attendanceData.year) }).map((_, i) => (
+              <option key={i + 1} value={i + 1}>{i + 1}</option>
             ))}
           </select>
 
-          {/* Roll Numbers Input with + Icon */}
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             <input
               type="text"
               readOnly
@@ -253,22 +216,24 @@ const SuperAdmin = () => {
             />
             <button
               onClick={() => setShowRollNumberPopup(true)}
-              className="ml-2 px-3 py-2 bg-green-600 text-white rounded"
+              className="px-3 py-2 bg-green-600 text-white rounded"
             >
               +
             </button>
           </div>
 
-          {/* Roll Numbers Popup */}
           {showRollNumberPopup && (
-            <div className="absolute z-10 bg-white border p-4 rounded shadow-lg w-64 mt-2">
-              <h3 className="font-semibold">Select Roll Numbers</h3>
-              <div className="grid grid-cols-5 gap-2">
+            <div className="absolute z-20 bg-white border p-4 rounded shadow-lg w-64 mt-2">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-semibold">Select Roll Numbers</h3>
+                <button onClick={() => setShowRollNumberPopup(false)} className="text-red-500 text-sm">Close</button>
+              </div>
+              <div className="grid grid-cols-5 gap-2 max-h-64 overflow-y-auto">
                 {availableRollNumbers.map((rollNo) => (
                   <button
                     key={rollNo}
                     onClick={() => handleRollNoClick(rollNo)}
-                    className={`px-2 py-1 border rounded ${attendanceData.attendance[rollNo] ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+                    className={`px-2 py-1 border rounded text-sm ${attendanceData.attendance[rollNo] ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}
                   >
                     {rollNo}
                   </button>
@@ -277,7 +242,6 @@ const SuperAdmin = () => {
             </div>
           )}
 
-          {/* Submit Button */}
           <button
             onClick={addAttendance}
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
@@ -287,40 +251,32 @@ const SuperAdmin = () => {
         </div>
       )}
 
+      {/* Expense Section */}
       {activeSection === 'expense' && (
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Add Expense</h2>
 
-          {/* Year Dropdown */}
           <select
             className="w-full border px-3 py-2 rounded"
             value={expenseData.year}
             onChange={(e) => setExpenseData({ ...expenseData, year: e.target.value })}
           >
-            {[...Array(10)].map((_, index) => {
-              const yearOption = new Date().getFullYear() - 5 + index;
-              return (
-                <option key={yearOption} value={yearOption}>
-                  {yearOption}
-                </option>
-              );
+            {[...Array(10)].map((_, i) => {
+              const y = new Date().getFullYear() - 5 + i;
+              return <option key={y} value={y}>{y}</option>;
             })}
           </select>
 
-          {/* Month Dropdown (Text format) */}
           <select
             className="w-full border px-3 py-2 rounded"
             value={expenseData.month}
             onChange={(e) => setExpenseData({ ...expenseData, month: e.target.value })}
           >
-            {monthNames.map((monthName) => (
-              <option key={monthName} value={monthName}>
-                {monthName}
-              </option>
+            {monthNames.map(month => (
+              <option key={month} value={month}>{month}</option>
             ))}
           </select>
 
-          {/* Roll Numbers Input */}
           <input
             type="text"
             placeholder="Enter Roll Numbers (comma separated)"
@@ -329,7 +285,6 @@ const SuperAdmin = () => {
             onChange={(e) => setExpenseData({ ...expenseData, attendance: e.target.value })}
           />
 
-          {/* Submit Button */}
           <button
             onClick={addExpense}
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
@@ -339,40 +294,32 @@ const SuperAdmin = () => {
         </div>
       )}
 
+      {/* Donation Section */}
       {activeSection === 'donation' && (
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Add Donation</h2>
 
-          {/* Year Dropdown */}
           <select
             className="w-full border px-3 py-2 rounded"
             value={donationData.year}
             onChange={(e) => setDonationData({ ...donationData, year: e.target.value })}
           >
-            {[...Array(10)].map((_, index) => {
-              const yearOption = new Date().getFullYear() - 5 + index;
-              return (
-                <option key={yearOption} value={yearOption}>
-                  {yearOption}
-                </option>
-              );
+            {[...Array(10)].map((_, i) => {
+              const y = new Date().getFullYear() - 5 + i;
+              return <option key={y} value={y}>{y}</option>;
             })}
           </select>
 
-          {/* Month Dropdown (Text format) */}
           <select
             className="w-full border px-3 py-2 rounded"
             value={donationData.month}
             onChange={(e) => setDonationData({ ...donationData, month: e.target.value })}
           >
-            {monthNames.map((monthName) => (
-              <option key={monthName} value={monthName}>
-                {monthName}
-              </option>
+            {monthNames.map(month => (
+              <option key={month} value={month}>{month}</option>
             ))}
           </select>
 
-          {/* Roll Numbers Input */}
           <input
             type="text"
             placeholder="Enter Roll Numbers (comma separated)"
@@ -381,7 +328,6 @@ const SuperAdmin = () => {
             onChange={(e) => setDonationData({ ...donationData, attendance: e.target.value })}
           />
 
-          {/* Submit Button */}
           <button
             onClick={addDonation}
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"

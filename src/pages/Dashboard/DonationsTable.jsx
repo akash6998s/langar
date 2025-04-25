@@ -61,7 +61,7 @@ const DonationsTable = () => {
       setTableData(data);
       setTotalDonations(total);
     }
-  }, [donationData, memberDetails, selectedYear, selectedMonth]);
+  }, [donationData, memberDetails, selectedYear, selectedMonth, monthNames]);
 
   const years = Object.keys(donationData);
   const months = selectedYear ? Object.keys(donationData[selectedYear]) : [];

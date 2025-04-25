@@ -1,8 +1,5 @@
 import React from "react";
 
-const mapLocation =
-  "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3508.3689782391625!2d77.28306957456492!3d28.438291592876585!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cde07636e0a33%3A0xf8a8f9a44109921a!2sShri%20Sidhdata%20Ashram!5e0!3m2!1sen!2sin!4v1745318108548!5m2!1sen!2sin";
-
 const Footer = () => {
   return (
     <footer className="bg-yellow-100 text-gray-700 py-10">
