@@ -35,41 +35,39 @@ const AllExpensesTable = () => {
   }, []);
 
   return (
-    <div className="p-6 max-w-5xl mx-auto bg-orange-50 rounded-2xl shadow-md">
-      <h2 className="text-2xl font-semibold text-center text-orange-700 mb-6">
+    <div className="p-8 max-w-7xl mx-auto shadow-xl rounded-lg">
+      <h2 className="text-3xl font-semibold text-center text-orange-700 mb-8 tracking-wide">
         📜 All Expense Records
       </h2>
 
       {expenses.length > 0 ? (
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-orange-100 text-orange-800 text-sm uppercase">
-                <th className="border border-orange-300 px-4 py-2">Year</th>
-                <th className="border border-orange-300 px-4 py-2">Month</th>
-                <th className="border border-orange-300 px-4 py-2">Amount</th>
-                <th className="border border-orange-300 px-4 py-2">Description</th>
+        <div className="overflow-x-auto shadow-lg rounded-lg">
+          <table className="w-full text-sm text-gray-800">
+            <thead className="bg-gradient-to-r from-orange-400 to-yellow-500 text-white uppercase">
+              <tr>
+                <th className="px-6 py-4 text-left">Year</th>
+                <th className="px-6 py-4 text-left">Month</th>
+                <th className="px-6 py-4 text-left">Amount</th>
+                <th className="px-6 py-4 text-left">Description</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-gray-300">
               {expenses.map((item, index) => (
                 <tr
                   key={index}
-                  className={`text-center ${index % 2 === 0 ? 'bg-orange-50' : 'bg-orange-100'}`}
+                  className={`transition-transform duration-200`}
                 >
-                  <td className="border border-orange-200 px-4 py-2">{item.year}</td>
-                  <td className="border border-orange-200 px-4 py-2 capitalize">{item.month}</td>
-                  <td className="border border-orange-200 px-4 py-2 font-semibold text-green-700">
-                    ₹ {item.amount}
-                  </td>
-                  <td className="border border-orange-200 px-4 py-2 text-gray-700">{item.description}</td>
+                  <td className="px-6 py-4 font-medium">{item.year}</td>
+                  <td className="px-6 py-4 capitalize">{item.month}</td>
+                  <td className="px-6 py-4 font-semibold text-green-600">₹ {item.amount}</td>
+                  <td className="px-6 py-4 text-gray-700">{item.description}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       ) : (
-        <p className="text-center text-orange-600 mt-4 italic">
+        <p className="text-center text-gray-600 mt-4 italic">
           कोई खर्चा रिकॉर्ड नहीं मिला।
         </p>
       )}

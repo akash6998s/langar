@@ -1,69 +1,111 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 const months = [
-  'january', 'february', 'march', 'april', 'may', 'june',
-  'july', 'august', 'september', 'october', 'november', 'december'
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
 ];
 const currentYear = new Date().getFullYear();
-const years = Array.from({ length: 5 }, (_, i) => (currentYear - 2 + i).toString());
+const years = Array.from({ length: 5 }, (_, i) =>
+  (currentYear - 2 + i).toString()
+);
 
 const monthDays = {
-  january: 31, february: 28, march: 31, april: 30, may: 31, june: 30,
-  july: 31, august: 31, september: 30, october: 31, november: 30, december: 31
+  january: 31,
+  february: 28,
+  march: 31,
+  april: 30,
+  may: 31,
+  june: 30,
+  july: 31,
+  august: 31,
+  september: 30,
+  october: 31,
+  november: 30,
+  december: 31,
 };
 
 export default function Dashboard() {
   const [attendanceData, setAttendanceData] = useState({});
   const [members, setMembers] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState('january');
+  const [selectedMonth, setSelectedMonth] = useState("january");
   const [selectedYear, setSelectedYear] = useState(currentYear.toString());
 
   const isLeapYear = (year) =>
-    (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+    (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 
   useEffect(() => {
-    fetch('http://localhost:5000/attendance')
-      .then(res => res.json())
-      .then(data => {
+    fetch("http://localhost:5000/attendance")
+      .then((res) => res.json())
+      .then((data) => {
         if (data.length > 0) setAttendanceData(data[0]);
       });
 
-    fetch('http://localhost:5000/member-full-details')
-      .then(res => res.json())
+    fetch("http://localhost:5000/member-full-details")
+      .then((res) => res.json())
       .then(setMembers);
   }, [selectedMonth, selectedYear]);
 
   const renderAttendanceTable = () => {
+    // Fetch the attendance data for the selected year and month
     const yearData = attendanceData[selectedYear] || {};
     const monthData = yearData[selectedMonth] || {};
-    const daysInMonth = selectedMonth === 'february' && isLeapYear(Number(selectedYear))
-      ? 29 : monthDays[selectedMonth];
-    const days = Array.from({ length: daysInMonth }, (_, i) => `day${i + 1}`);
+    const daysInMonth =
+      selectedMonth === "february" && isLeapYear(Number(selectedYear))
+        ? 29
+        : monthDays[selectedMonth];
+
+    // Create an array of dates and days
+    const days = Array.from({ length: daysInMonth }, (_, i) => {
+      const date = new Date(selectedYear, months.indexOf(selectedMonth), i + 1);
+      const dayName = date.toLocaleString("default", { weekday: "short" }); // 'Mon', 'Tue', etc.
+      return `${i + 1} ${dayName}`; // e.g., '1 Mon', '2 Tue'
+    });
 
     return (
-      <div className="overflow-auto max-h-[70vh] mb-10">
-        <table className="min-w-full border text-sm bg-[#fffaf3] shadow border-orange-200">
-          <thead className="bg-[#fff0cc] text-[#6b2400] sticky top-0">
+      <div className="overflow-x-auto max-h-[70vh] bg-orange-50 rounded-lg shadow border border-orange-200 mb-10">
+        <table className="min-w-full text-sm text-center">
+          <thead className="bg-orange-100 text-orange-900 sticky top-0 z-10">
             <tr>
-              <th className="px-4 py-2 border">रोल नंबर</th>
-              <th className="px-4 py-2 border">सेवक नाम</th>
-              {days.map(day => (
-                <th key={day} className="px-2 py-1 border whitespace-nowrap">
-                  {day.replace('day', 'दिन ')}
+              <th className="px-4 py-2 border sticky left-0 bg-orange-100 z-20">
+                रोल नंबर
+              </th>
+              <th className="px-4 py-2 border sticky left-0 bg-orange-100 z-20">
+                सेवक नाम
+              </th>
+              {days.map((day, index) => (
+                <th key={index} className="px-2 py-1 border whitespace-nowrap">
+                  {day}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {members.map(member => (
-              <tr key={member.roll_no} className="text-center">
-                <td className="px-4 py-2 border font-medium">{member.roll_no}</td>
-                <td className="px-4 py-2 border">{member.name} {member.last_name}</td>
-                {days.map(day => {
-                  const attended = monthData[day]?.[member.roll_no.toString()];
+            {members.map((member) => (
+              <tr key={member.roll_no}>
+                <td className="px-4 py-2 border font-semibold sticky left-0 bg-white">
+                  {member.roll_no}
+                </td>
+                <td className="px-4 py-2 border sticky left-0 bg-white">
+                  {member.name} {member.last_name}
+                </td>
+                {days.map((day, index) => {
+                  const dayNumber = index + 1; // Convert the day name to a number (1, 2, 3, ...)
+                  const dayAttendance = monthData[dayNumber] || {}; // Get attendance for the given day
+                  const attended = dayAttendance[member.roll_no] === "present"; // Check if roll number is present on that day
+
                   return (
-                    <td key={day} className="px-2 py-1 border">
-                      {attended === true ? '✅' : '-'}
+                    <td key={index} className="px-2 py-1 border">
+                      {attended ? "✅" : "-"}
                     </td>
                   );
                 })}
@@ -80,18 +122,22 @@ export default function Dashboard() {
       <div className="flex flex-wrap justify-center gap-4 mb-6">
         <select
           value={selectedYear}
-          onChange={e => setSelectedYear(e.target.value)}
+          onChange={(e) => setSelectedYear(e.target.value)}
           className="p-2 border rounded bg-white"
         >
-          {years.map(year => <option key={year} value={year}>{year}</option>)}
+          {years.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
         </select>
 
         <select
           value={selectedMonth}
-          onChange={e => setSelectedMonth(e.target.value)}
+          onChange={(e) => setSelectedMonth(e.target.value)}
           className="p-2 border rounded bg-white"
         >
-          {months.map(month => (
+          {months.map((month) => (
             <option key={month} value={month}>
               {month.charAt(0).toUpperCase() + month.slice(1)}
             </option>
@@ -102,7 +148,7 @@ export default function Dashboard() {
       {renderAttendanceTable()}
       <DonationsTable />
       <AllExpensesTable />
-      <FinanceTable/>
+      <FinanceTable />
     </div>
   );
 }
@@ -119,19 +165,18 @@ const FinanceTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/overall-summary');
+        const response = await fetch("http://localhost:5000/overall-summary");
         const result = await response.json();
         if (result.success) {
           setData(result.data); // Update the state with the data from API
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
-  
+
     fetchData();
   }, []);
-  
 
   return (
     <div className="finance-container">
@@ -161,21 +206,31 @@ const FinanceTable = () => {
 const DonationsTable = () => {
   const [donationData, setDonationData] = useState({});
   const [memberDetails, setMemberDetails] = useState([]);
-  const [selectedYear, setSelectedYear] = useState('');
-  const [selectedMonth, setSelectedMonth] = useState('');
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
   const [tableData, setTableData] = useState([]);
 
   const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [donationRes, memberRes] = await Promise.all([
-          fetch('http://localhost:5000/donations'),
-          fetch('http://localhost:5000/member-full-details')
+          fetch("http://localhost:5000/donations"),
+          fetch("http://localhost:5000/member-full-details"),
         ]);
 
         const donationJson = await donationRes.json();
@@ -199,7 +254,7 @@ const DonationsTable = () => {
           setSelectedMonth(firstMonth);
         }
       } catch (error) {
-        console.error('Error fetching donation data:', error);
+        console.error("Error fetching donation data:", error);
       }
     };
 
@@ -215,7 +270,7 @@ const DonationsTable = () => {
         return {
           roll_no: index + 1,
           name: fullName,
-          amount
+          amount,
         };
       });
       setTableData(data);
@@ -233,14 +288,16 @@ const DonationsTable = () => {
           value={selectedYear}
           onChange={(e) => {
             setSelectedYear(e.target.value);
-            setSelectedMonth('');
+            setSelectedMonth("");
             setTableData([]);
           }}
           className="border px-3 py-2"
         >
           <option value="">Select Year</option>
           {years.map((year) => (
-            <option key={year} value={year}>{year}</option>
+            <option key={year} value={year}>
+              {year}
+            </option>
           ))}
         </select>
 
@@ -252,7 +309,9 @@ const DonationsTable = () => {
         >
           <option value="">Select Month</option>
           {months.map((month) => (
-            <option key={month} value={month}>{month}</option>
+            <option key={month} value={month}>
+              {month}
+            </option>
           ))}
         </select>
       </div>
@@ -277,7 +336,9 @@ const DonationsTable = () => {
           </tbody>
         </table>
       ) : (
-        <p className="text-center text-gray-500 mt-4">No donation data available.</p>
+        <p className="text-center text-gray-500 mt-4">
+          No donation data available.
+        </p>
       )}
     </div>
   );
@@ -289,7 +350,7 @@ const AllExpensesTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('http://localhost:5000/expenses');
+        const res = await fetch("http://localhost:5000/expenses");
         const json = await res.json();
 
         const parsedData = [];
@@ -311,7 +372,7 @@ const AllExpensesTable = () => {
 
         setExpenses(parsedData);
       } catch (error) {
-        console.error('Error fetching expense data:', error);
+        console.error("Error fetching expense data:", error);
       }
     };
 

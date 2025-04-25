@@ -6,7 +6,7 @@ const DonationsTable = () => {
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('');
   const [tableData, setTableData] = useState([]);
-  const [totalDonations, setTotalDonations] = useState(0); // New state for total donations
+  const [totalDonations, setTotalDonations] = useState(0);
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -35,9 +35,8 @@ const DonationsTable = () => {
           setSelectedYear(currYear);
           setSelectedMonth(currMonth);
         } else {
-          const availableYears = Object.keys(donationJson);
-          const firstYear = availableYears[0];
-          const firstMonth = Object.keys(donationJson[firstYear])[0];
+          const firstYear = Object.keys(donationJson)[0];
+          const firstMonth = donationJson[firstYear] ? Object.keys(donationJson[firstYear])[0] : '';
           setSelectedYear(firstYear);
           setSelectedMonth(firstMonth);
         }
@@ -52,21 +51,15 @@ const DonationsTable = () => {
   useEffect(() => {
     if (selectedYear && selectedMonth) {
       const monthData = donationData[selectedYear]?.[selectedMonth] || {};
-      const data = memberDetails.map((member, index) => {
-        const fullName = `${member.name} ${member.last_name}`;
-        const amount = monthData[index + 1] || 0;
-        return {
-          roll_no: index + 1,
-          name: fullName,
-          amount
-        };
-      });
+      const data = memberDetails.map((member, index) => ({
+        roll_no: index + 1,
+        name: `${member.name} ${member.last_name}`,
+        amount: monthData[index + 1] || 0
+      }));
 
-      // Calculate total donations for the selected month
-      const total = data.reduce((acc, row) => acc + row.amount, 0);
-      setTotalDonations(total);
-
+      const total = data.reduce((sum, item) => sum + item.amount, 0);
       setTableData(data);
+      setTotalDonations(total);
     }
   }, [donationData, memberDetails, selectedYear, selectedMonth]);
 
@@ -74,74 +67,81 @@ const DonationsTable = () => {
   const months = selectedYear ? Object.keys(donationData[selectedYear]) : [];
 
   return (
-    <div className="p-6 max-w-4xl mx-auto bg-[#fffaf3] rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold text-[#6b2400] text-center mb-6">
-        मासिक दान सूची (Monthly Donations)
-      </h2>
+    <div className="bg-gradient-to-tr from-[#fffaf0] via-[#fdf4e3] to-[#fffaf0] min-h-screen py-10 px-4">
+      <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-lg p-8 border border-[#f1d9a7]">
+        <h2 className="text-4xl font-bold text-[#6b2400] text-center mb-10 tracking-wide">
+          मासिक दान सूची (Monthly Donations)
+        </h2>
 
-      <div className="flex flex-wrap justify-center gap-4 mb-6">
-        {/* Year Selector */}
-        <select
-          value={selectedYear}
-          onChange={(e) => {
-            setSelectedYear(e.target.value);
-            setSelectedMonth('');
-            setTableData([]);
-          }}
-          className="border border-[#e3b04b] bg-[#fff5db] text-[#6b2400] px-4 py-2 rounded-lg shadow-sm"
-        >
-          <option value="">Select Year</option>
-          {years.map((year) => (
-            <option key={year} value={year}>{year}</option>
-          ))}
-        </select>
+        {/* Select Year & Month */}
+        <div className="flex flex-wrap justify-center gap-6 mb-10">
+          <select
+            value={selectedYear}
+            onChange={(e) => {
+              setSelectedYear(e.target.value);
+              setSelectedMonth('');
+              setTableData([]);
+            }}
+            className="px-5 py-2 bg-[#fff9ec] border border-[#e3b04b] rounded-lg text-[#6b2400] shadow-sm focus:ring-2 focus:ring-[#e3b04b]"
+          >
+            <option value="">वर्ष चुनें (Select Year)</option>
+            {years.map((year) => (
+              <option key={year} value={year}>{year}</option>
+            ))}
+          </select>
 
-        {/* Month Selector */}
-        <select
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
-          className="border border-[#e3b04b] bg-[#fff5db] text-[#6b2400] px-4 py-2 rounded-lg shadow-sm"
-          disabled={!selectedYear}
-        >
-          <option value="">Select Month</option>
-          {months.map((month) => (
-            <option key={month} value={month}>{month}</option>
-          ))}
-        </select>
-      </div>
-
-      {tableData.length > 0 && (
-        <div className="mb-6 text-center text-[#6b2400]">
-          <h3 className="text-xl font-semibold">कुल दान राशि (Total Donations): ₹ {totalDonations}</h3>
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            disabled={!selectedYear}
+            className="px-5 py-2 bg-[#fff9ec] border border-[#e3b04b] rounded-lg text-[#6b2400] shadow-sm focus:ring-2 focus:ring-[#e3b04b]"
+          >
+            <option value="">माह चुनें (Select Month)</option>
+            {months.map((month) => (
+              <option key={month} value={month}>{month}</option>
+            ))}
+          </select>
         </div>
-      )}
 
-      {tableData.length > 0 ? (
-        <div className="overflow-x-auto">
-          <table className="w-full border border-[#e3b04b] rounded-lg overflow-hidden">
-            <thead>
-              <tr className="bg-[#fce6a4] text-[#6b2400] text-center">
-                <th className="py-3 px-4 border">क्रम संख्या</th>
-                <th className="py-3 px-4 border">सेवक का नाम</th>
-                <th className="py-3 px-4 border">दान राशि</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData.map((row) => (
-                <tr key={row.roll_no} className="text-center hover:bg-[#fdf4d7]">
-                  <td className="py-2 px-4 border">{row.roll_no}</td>
-                  <td className="py-2 px-4 border">{row.name}</td>
-                  <td className="py-2 px-4 border">₹ {row.amount}</td>
+        {/* Total Donations */}
+        {tableData.length > 0 && (
+          <div className="text-center mb-8">
+            <span className="text-xl font-bold text-green-800 bg-green-100 px-6 py-2 rounded-full shadow-sm">
+              कुल दान राशि: ₹ {totalDonations}
+            </span>
+          </div>
+        )}
+
+        {/* Donation Table */}
+        {tableData.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white rounded-xl overflow-hidden shadow-sm">
+              <thead className="bg-[#fdf0c2] text-[#6b2400]">
+                <tr>
+                  <th className="py-3 px-6 text-left border border-[#e3b04b]">क्रम</th>
+                  <th className="py-3 px-6 text-left border border-[#e3b04b]">सेवक का नाम</th>
+                  <th className="py-3 px-6 text-left border border-[#e3b04b]">दान राशि</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p className="text-center text-[#a17400] mt-6">
-          अभी कोई दान जानकारी उपलब्ध नहीं है।
-        </p>
-      )}
+              </thead>
+              <tbody className="text-gray-700">
+                {tableData.map((row) => (
+                  <tr key={row.roll_no} className="hover:bg-[#fff6d0] transition-all">
+                    <td className="py-2 px-6 border border-[#f7e9bb]">{row.roll_no}</td>
+                    <td className="py-2 px-6 border border-[#f7e9bb]">{row.name}</td>
+                    <td className="py-2 px-6 border border-[#f7e9bb] font-semibold text-green-700">
+                      ₹ {row.amount}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="text-center text-[#b58700] mt-10 italic">
+            अभी कोई दान जानकारी उपलब्ध नहीं है।
+          </p>
+        )}
+      </div>
     </div>
   );
 };

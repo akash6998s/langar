@@ -1,179 +1,146 @@
-import React, { useEffect, useState } from 'react';
-import DonationsTable from './Dashboard/DonationsTable';
-import AllExpensesTable from './Dashboard/AllExpensesTable';
-import FinanceTable from './Dashboard/FinanceTable';
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import AllExpensesTable from "./Dashboard/AllExpensesTable"; // Assuming AllExpenseTable is imported
+import DonationsTable from "./Dashboard/DonationsTable"; // Assuming DonationsTable is imported
 
-const months = [
-  'january', 'february', 'march', 'april', 'may', 'june',
-  'july', 'august', 'september', 'october', 'november', 'december'
-];
-
-const currentDate = new Date();
-const currentMonth = months[currentDate.getMonth()];
-const currentYear = currentDate.getFullYear();
-const years = Array.from({ length: 5 }, (_, i) => (currentYear - 2 + i).toString());
-
-const monthDays = {
-  january: 31, february: 28, march: 31, april: 30, may: 31, june: 30,
-  july: 31, august: 31, september: 30, october: 31, november: 30, december: 31
+const getDaysInMonth = (year, monthName) => {
+  const monthIndex = new Date(`${monthName} 1, ${year}`).getMonth();
+  return new Date(year, monthIndex + 1, 0).getDate();
 };
 
-export default function Dashboard() {
+export default function AttendanceTable() {
   const [attendanceData, setAttendanceData] = useState({});
-  const [members, setMembers] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
-  const [selectedYear, setSelectedYear] = useState(currentYear.toString());
-  const [view, setView] = useState('attendance'); // 'attendance', 'donations', 'expenses'
-
-  const isLeapYear = (year) =>
-    (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [students, setStudents] = useState({});
+  const [activeTab, setActiveTab] = useState("attendance"); // Track active tab (attendance, expense, donations)
 
   useEffect(() => {
-    if (view === 'attendance') {
-      fetch('http://localhost:5000/attendance')
-        .then(res => res.json())
-        .then(data => {
-          if (data.length > 0) setAttendanceData(data[0]);
+    // Fetch attendance data
+    fetch("http://localhost:5000/attendance")
+      .then((res) => res.json())
+      .then((data) => {
+        const result = data[0];
+        setAttendanceData(result);
+
+        const years = Object.keys(result);
+        if (years.length > 0) {
+          const defaultYear = years[0];
+          const months = Object.keys(result[defaultYear]);
+          const defaultMonth = months.length > 0 ? months[0] : "";
+          setSelectedYear(defaultYear);
+          setSelectedMonth(defaultMonth);
+        }
+      });
+
+    // Fetch student names
+    fetch("http://localhost:5000/member-full-details")
+      .then((res) => res.json())
+      .then((data) => {
+        const formatted = {};
+        data.forEach((student) => {
+          const fullName = `${student.name} ${student.last_name}`.trim();
+          formatted[student.roll_no] = fullName;
         });
+        setStudents(formatted);
+      });
+  }, []);
 
-      fetch('http://localhost:5000/member-full-details')
-        .then(res => res.json())
-        .then(setMembers);
-    }
-  }, [selectedMonth, selectedYear, view]);
+  const daysInMonth =
+    selectedYear && selectedMonth
+      ? getDaysInMonth(selectedYear, selectedMonth)
+      : 0;
 
-  const renderAttendanceTable = () => {
-    const yearData = attendanceData[selectedYear] || {};
-    const monthData = yearData[selectedMonth] || {};
-    const daysInMonth = selectedMonth === 'february' && isLeapYear(Number(selectedYear))
-      ? 29 : monthDays[selectedMonth];
-  
-    // Create an array of dates and days
-    const days = Array.from({ length: daysInMonth }, (_, i) => {
-      const date = new Date(selectedYear, months.indexOf(selectedMonth), i + 1);
-      const dayName = date.toLocaleString('default', { weekday: 'short' }); // 'Mon', 'Tue', etc.
-      return `${i + 1} ${dayName}`; // e.g., '1 Mon', '2 Tue'
-    });
-  
-    return (
-      <div className="overflow-x-auto max-h-[70vh] bg-orange-50 rounded-lg shadow border border-orange-200 mb-10">
-        <table className="min-w-full text-sm text-center">
-          <thead className="bg-orange-100 text-orange-900 sticky top-0 z-10">
-            <tr>
-              <th className="px-4 py-2 border sticky left-0 bg-orange-100 z-20">रोल नंबर</th>
-              <th className="px-4 py-2 border sticky left-0 bg-orange-100 z-20">सेवक नाम</th>
-              {days.map((day, index) => (
-                <th key={index} className="px-2 py-1 border whitespace-nowrap">{day}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {members.map(member => (
-              <tr key={member.roll_no}>
-                <td className="px-4 py-2 border font-semibold sticky left-0 bg-white">{member.roll_no}</td>
-                <td className="px-4 py-2 border sticky left-0 bg-white">{member.name} {member.last_name}</td>
-                {days.map((day, index) => {
-                  const attended = monthData[`day${index + 1}`]?.[member.roll_no.toString()];
-                  return (
-                    <td key={index} className="px-2 py-1 border">
-                      {attended === true ? '✅' : '-'}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
+  const dates = Array.from({ length: daysInMonth }, (_, i) => `${i + 1}`);
 
   return (
-    <>
-      {/* Superadmin Button */}
-      <div className="flex justify-end my-4 px-4">
-        <Link to="/superadminlogin" className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md font-semibold">
-          Superadmin
-        </Link>
+    <div className="p-6 bg-gradient-to-br from-yellow-50 to-orange-100 min-h-screen">
+      <h1 className="text-2xl text-center font-bold text-orange-700 mb-6 underline decoration-orange-400">
+        Dashboard
+      </h1>
+
+      {/* Toggle Buttons for Attendance, Expense, and Donations */}
+      <div className="flex justify-center gap-4 mb-6">
+        <button
+          onClick={() => setActiveTab("attendance")}
+          className={`px-4 py-2 border rounded ${activeTab === "attendance" ? "bg-orange-500 text-white" : "bg-white text-orange-500"}`}
+        >
+          Attendance
+        </button>
+        <button
+          onClick={() => setActiveTab("expense")}
+          className={`px-4 py-2 border rounded ${activeTab === "expense" ? "bg-orange-500 text-white" : "bg-white text-orange-500"}`}
+        >
+          Expense
+        </button>
+        <button
+          onClick={() => setActiveTab("donations")}
+          className={`px-4 py-2 border rounded ${activeTab === "donations" ? "bg-orange-500 text-white" : "bg-white text-orange-500"}`}
+        >
+          Donations
+        </button>
       </div>
 
-      <FinanceTable />
-
-      <div className="p-6 max-w-7xl mx-auto font-sans text-[#4b2e00]">
-        {/* Toggle Buttons */}
-        <div className="flex justify-center gap-4 mb-6">
-          <button
-            onClick={() => setView('attendance')}
-            className={`px-4 py-2 rounded font-semibold shadow ${view === 'attendance' ? 'bg-orange-500 text-white' : 'bg-orange-100 text-orange-700'}`}
-          >
-            🧘 उपस्थिति
-          </button>
-          <button
-            onClick={() => setView('donations')}
-            className={`px-4 py-2 rounded font-semibold shadow ${view === 'donations' ? 'bg-orange-500 text-white' : 'bg-orange-100 text-orange-700'}`}
-          >
-            💰 दान
-          </button>
-          <button
-            onClick={() => setView('expenses')}
-            className={`px-4 py-2 rounded font-semibold shadow ${view === 'expenses' ? 'bg-orange-500 text-white' : 'bg-orange-100 text-orange-700'}`}
-          >
-            📦 खर्च
-          </button>
+      {/* Render Table based on Active Tab */}
+      {activeTab === "attendance" && selectedYear && selectedMonth ? (
+        <div className="overflow-x-auto shadow-md rounded-lg">
+          <table className="w-full text-sm text-center border border-orange-300 bg-white rounded">
+            <thead className="bg-orange-200 text-orange-900">
+              <tr>
+                <th className="border border-orange-300 px-3 py-2 sticky top-0 left-0 bg-orange-200 z-10">
+                  Roll No
+                </th>
+                <th className="border border-orange-300 px-3 py-2 sticky top-0 left-0 bg-orange-200 z-10">
+                  Name
+                </th>
+                {dates.map((date) => (
+                  <th
+                    key={date}
+                    className="border border-orange-300 px-2 py-2 sticky top-0 bg-orange-200"
+                  >
+                    {date}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(students).map(([roll, name]) => (
+                <tr
+                  key={roll}
+                  className="hover:bg-orange-50 transition duration-200"
+                >
+                  <td className="border border-orange-200 px-2 py-2 sticky left-0 bg-white">
+                    {roll}
+                  </td>
+                  <td className="border border-orange-200 px-2 py-2 font-medium text-left sticky left-0 bg-white">
+                    {name}
+                  </td>
+                  {dates.map((date) => {
+                    const present =
+                      attendanceData[selectedYear]?.[selectedMonth]?.[date] ||
+                      {};
+                    return (
+                      <td
+                        key={date}
+                        className="border border-orange-100 px-2 py-2 text-green-600"
+                      >
+                        {present[roll] === "present" ? "✔️" : ""}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-
-        {/* Month-Year Selector (Only in Attendance View) */}
-        {view === 'attendance' && (
-          <div className="bg-gradient-to-br from-orange-100 to-yellow-50 p-3 rounded-lg shadow mb-3">
-            <h2 className="text-xl font-bold mb-4 text-center text-orange-800">
-              🧘 सेवकों की उपस्थिति तालिका
-            </h2>
-            <div className="flex flex-wrap justify-center gap-4">
-              <select
-                value={selectedYear}
-                onChange={e => setSelectedYear(e.target.value)}
-                className="p-2 border rounded bg-white shadow focus:outline-none"
-              >
-                {years.map(year => (
-                  <option key={year} value={year}>{year}</option>
-                ))}
-              </select>
-
-              <select
-                value={selectedMonth}
-                onChange={e => setSelectedMonth(e.target.value)}
-                className="p-2 border rounded bg-white shadow focus:outline-none"
-              >
-                {months.map(month => (
-                  <option key={month} value={month}>
-                    {month.charAt(0).toUpperCase() + month.slice(1)}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        )}
-
-        {/* Render Views */}
-        {view === 'attendance' && (
-          <div className="mb-10">
-            {renderAttendanceTable()}
-          </div>
-        )}
-
-        {view === 'donations' && (
-          <div className="mb-10">
-            <DonationsTable />
-          </div>
-        )}
-
-        {view === 'expenses' && (
-          <div className="mb-10">
-            <AllExpensesTable />
-          </div>
-        )}
-      </div>
-    </>
+      ) : activeTab === "expense" ? (
+        <AllExpensesTable/>
+      ) : activeTab === "donations" ? (
+        <DonationsTable/>
+      ) : (
+        <p className="text-center text-orange-700 font-medium">
+          ⏳ Loading data...
+        </p>
+      )}
+    </div>
   );
 }
