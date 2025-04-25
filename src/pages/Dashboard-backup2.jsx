@@ -121,7 +121,6 @@ const FinanceTable = () => {
       try {
         const response = await fetch('http://localhost:5000/overall-summary');
         const result = await response.json();
-        console.log(result); // Log the result to see the response
         if (result.success) {
           setData(result.data); // Update the state with the data from API
         }
