@@ -35,15 +35,15 @@ const AllExpensesTable = () => {
   }, []);
 
   return (
-    <div className="p-8 max-w-7xl mx-auto shadow-xl rounded-lg">
+    <div className="p-8 max-w-7xl mx-auto shadow-2xl rounded-lg bg-gradient-to-r from-orange-100 to-yellow-200">
       <h2 className="text-3xl font-semibold text-center text-orange-700 mb-8 tracking-wide">
         📜 All Expense Records
       </h2>
 
       {expenses.length > 0 ? (
-        <div className="overflow-x-auto shadow-lg rounded-lg">
-          <table className="w-full text-sm text-gray-800">
-            <thead className="bg-gradient-to-r from-orange-400 to-yellow-500 text-white uppercase">
+        <div className="overflow-x-auto shadow-lg rounded-lg bg-white">
+          <table className="min-w-full text-sm text-gray-800">
+            <thead className="bg-gradient-to-r from-orange-400 to-yellow-500 text-white uppercase sticky top-0">
               <tr>
                 <th className="px-6 py-4 text-left">Year</th>
                 <th className="px-6 py-4 text-left">Month</th>
@@ -55,7 +55,7 @@ const AllExpensesTable = () => {
               {expenses.map((item, index) => (
                 <tr
                   key={index}
-                  className={`transition-transform duration-200`}
+                  className="hover:bg-orange-50 transition-transform duration-200"
                 >
                   <td className="px-6 py-4 font-medium">{item.year}</td>
                   <td className="px-6 py-4 capitalize">{item.month}</td>

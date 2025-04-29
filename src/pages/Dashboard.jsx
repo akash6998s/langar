@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from "react";
-import AllExpensesTable from "./Dashboard/AllExpensesTable"; // Assuming AllExpenseTable is imported
-import DonationsTable from "./Dashboard/DonationsTable"; // Assuming DonationsTable is imported
+import AllExpensesTable from "../components/AllExpensesTable"; // Assuming AllExpenseTable is imported
+import DonationsTable from "../components/DonationsTable"; // Assuming DonationsTable is imported
 
 const getDaysInMonth = (year, monthName) => {
   const monthIndex = new Date(`${monthName} 1, ${year}`).getMonth();
-  return new Date(year, monthIndex + 1, 0).getDate();
+  const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+  const days = [];
+
+  for (let i = 1; i <= daysInMonth; i++) {
+    const date = new Date(year, monthIndex, i);
+    const day = date.toLocaleString('default', { weekday: 'short' }); // Get day (Mon, Tue, etc.)
+    days.push({ date: i, day });
+  }
+
+  return days;
 };
 
 export default function AttendanceTable() {
@@ -15,6 +24,10 @@ export default function AttendanceTable() {
   const [activeTab, setActiveTab] = useState("attendance"); // Track active tab (attendance, expense, donations)
 
   useEffect(() => {
+    // Get the current year and month
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+
     // Fetch attendance data
     fetch("http://localhost:5000/attendance")
       .then((res) => res.json())
@@ -24,9 +37,9 @@ export default function AttendanceTable() {
 
         const years = Object.keys(result);
         if (years.length > 0) {
-          const defaultYear = years[0];
+          const defaultYear = years.includes(currentYear.toString()) ? currentYear.toString() : years[0];
           const months = Object.keys(result[defaultYear]);
-          const defaultMonth = months.length > 0 ? months[0] : "";
+          const defaultMonth = months.includes(currentMonth) ? currentMonth : months[0];
           setSelectedYear(defaultYear);
           setSelectedMonth(defaultMonth);
         }
@@ -45,12 +58,19 @@ export default function AttendanceTable() {
       });
   }, []);
 
+  const handleYearChange = (e) => {
+    setSelectedYear(e.target.value);
+    setSelectedMonth(""); // Reset month selection when year changes
+  };
+
+  const handleMonthChange = (e) => {
+    setSelectedMonth(e.target.value);
+  };
+
   const daysInMonth =
     selectedYear && selectedMonth
       ? getDaysInMonth(selectedYear, selectedMonth)
-      : 0;
-
-  const dates = Array.from({ length: daysInMonth }, (_, i) => `${i + 1}`);
+      : [];
 
   return (
     <div className="p-6 bg-gradient-to-br from-yellow-50 to-orange-100 min-h-screen">
@@ -80,6 +100,38 @@ export default function AttendanceTable() {
         </button>
       </div>
 
+      {/* Dropdowns for Year and Month (only show for Attendance tab) */}
+      {activeTab === "attendance" && (
+        <div className="flex justify-center gap-4 mb-6">
+          <select
+            className="px-4 py-2 border rounded"
+            value={selectedYear}
+            onChange={handleYearChange}
+          >
+            {Object.keys(attendanceData).map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+
+          <select
+            className="px-4 py-2 border rounded"
+            value={selectedMonth}
+            onChange={handleMonthChange}
+            disabled={!selectedYear}
+          >
+            <option value="">Select Month</option> {/* Added a blank option */}
+            {selectedYear &&
+              Object.keys(attendanceData[selectedYear]).map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+          </select>
+        </div>
+      )}
+
       {/* Render Table based on Active Tab */}
       {activeTab === "attendance" && selectedYear && selectedMonth ? (
         <div className="overflow-x-auto shadow-md rounded-lg">
@@ -92,37 +144,25 @@ export default function AttendanceTable() {
                 <th className="border border-orange-300 px-3 py-2 sticky top-0 left-0 bg-orange-200 z-10">
                   Name
                 </th>
-                {dates.map((date) => (
-                  <th
-                    key={date}
-                    className="border border-orange-300 px-2 py-2 sticky top-0 bg-orange-200"
-                  >
-                    {date}
+                {daysInMonth.map(({ date, day }) => (
+                  <th key={date} className="border border-orange-300 px-2 py-2 sticky top-0 bg-orange-200">
+                    {date} <br /> ({day})
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {Object.entries(students).map(([roll, name]) => (
-                <tr
-                  key={roll}
-                  className="hover:bg-orange-50 transition duration-200"
-                >
-                  <td className="border border-orange-200 px-2 py-2 sticky left-0 bg-white">
-                    {roll}
-                  </td>
+                <tr key={roll} className="hover:bg-orange-50 transition duration-200">
+                  <td className="border border-orange-200 px-2 py-2 sticky left-0 bg-white">{roll}</td>
                   <td className="border border-orange-200 px-2 py-2 font-medium text-left sticky left-0 bg-white">
                     {name}
                   </td>
-                  {dates.map((date) => {
+                  {daysInMonth.map(({ date }) => {
                     const present =
-                      attendanceData[selectedYear]?.[selectedMonth]?.[date] ||
-                      {};
+                      attendanceData[selectedYear]?.[selectedMonth]?.[date] || {};
                     return (
-                      <td
-                        key={date}
-                        className="border border-orange-100 px-2 py-2 text-green-600"
-                      >
+                      <td key={date} className="border border-orange-100 px-2 py-2 text-green-600">
                         {present[roll] === "present" ? "✔️" : ""}
                       </td>
                     );
@@ -133,9 +173,9 @@ export default function AttendanceTable() {
           </table>
         </div>
       ) : activeTab === "expense" ? (
-        <AllExpensesTable/>
+        <AllExpensesTable />
       ) : activeTab === "donations" ? (
-        <DonationsTable/>
+        <DonationsTable />
       ) : (
         <p className="text-center text-orange-700 font-medium">
           ⏳ Loading data...

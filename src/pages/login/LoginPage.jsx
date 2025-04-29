@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // For redirection
-import admin from '../data/admin.json'; // Assuming admin data is in this file
+import admin from '../../data/admin.json'; // Assuming admin data is in this file
 
 const LoginPage = () => {
   const [emailOrPhone, setEmailOrPhone] = useState("");
