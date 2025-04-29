@@ -18,8 +18,8 @@ const DonationsTable = () => {
     const fetchData = async () => {
       try {
         const [donationRes, memberRes] = await Promise.all([
-          fetch('https://langar-db-csvv.onrender.com//donations'),
-          fetch('https://langar-db-csvv.onrender.com//member-full-details')
+          fetch('https://langar-db-csvv.onrender.com/donations'),
+          fetch('https://langar-db-csvv.onrender.com/member-full-details')
         ]);
 
         const donationJson = await donationRes.json();

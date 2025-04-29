@@ -93,7 +93,7 @@ const SuperAdmin = () => {
     }
 
     try {
-      const response = await axios.post('https://langar-db-csvv.onrender.com//update-attendance', {
+      const response = await axios.post('https://langar-db-csvv.onrender.com/update-attendance', {
         attendance: filteredAttendance,
         month,
         year: Number(year),
@@ -119,7 +119,7 @@ const SuperAdmin = () => {
     }
 
     try {
-      const response = await axios.post('https://langar-db-csvv.onrender.com//add-expense', {
+      const response = await axios.post('https://langar-db-csvv.onrender.com/add-expense', {
         attendance: attendance.split(',').map((r) => r.trim()),
         month,
         year: Number(year),
@@ -140,7 +140,7 @@ const SuperAdmin = () => {
     }
 
     try {
-      const response = await axios.post('https://langar-db-csvv.onrender.com//update-donations', {
+      const response = await axios.post('https://langar-db-csvv.onrender.com/update-donations', {
         attendance: attendance.split(',').map((r) => r.trim()),
         month,
         year: Number(year),

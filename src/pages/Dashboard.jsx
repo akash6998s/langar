@@ -29,7 +29,7 @@ export default function AttendanceTable() {
     const currentMonth = new Date().toLocaleString('default', { month: 'long' });
 
     // Fetch attendance data
-    fetch("https://langar-db-csvv.onrender.com//attendance")
+    fetch("https://langar-db-csvv.onrender.com/attendance")
       .then((res) => res.json())
       .then((data) => {
         const result = data[0];
@@ -46,7 +46,7 @@ export default function AttendanceTable() {
       });
 
     // Fetch student names
-    fetch("https://langar-db-csvv.onrender.com//member-full-details")
+    fetch("https://langar-db-csvv.onrender.com/member-full-details")
       .then((res) => res.json())
       .then((data) => {
         const formatted = {};

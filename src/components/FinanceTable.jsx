@@ -10,7 +10,7 @@ const FinanceTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://langar-db-csvv.onrender.com//overall-summary');
+        const response = await fetch('https://langar-db-csvv.onrender.com/overall-summary');
         const result = await response.json();
         if (result.success) {
           setData(result.data);

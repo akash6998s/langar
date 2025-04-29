@@ -44,13 +44,13 @@ export default function Dashboard() {
     (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 
   useEffect(() => {
-    fetch("https://langar-db-csvv.onrender.com//attendance")
+    fetch("https://langar-db-csvv.onrender.com/attendance")
       .then((res) => res.json())
       .then((data) => {
         if (data.length > 0) setAttendanceData(data[0]);
       });
 
-    fetch("https://langar-db-csvv.onrender.com//member-full-details")
+    fetch("https://langar-db-csvv.onrender.com/member-full-details")
       .then((res) => res.json())
       .then(setMembers);
   }, [selectedMonth, selectedYear]);
@@ -165,7 +165,7 @@ const FinanceTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://langar-db-csvv.onrender.com//overall-summary");
+        const response = await fetch("https://langar-db-csvv.onrender.com/overall-summary");
         const result = await response.json();
         if (result.success) {
           setData(result.data); // Update the state with the data from API
@@ -229,8 +229,8 @@ const DonationsTable = () => {
     const fetchData = async () => {
       try {
         const [donationRes, memberRes] = await Promise.all([
-          fetch("https://langar-db-csvv.onrender.com//donations"),
-          fetch("https://langar-db-csvv.onrender.com//member-full-details"),
+          fetch("https://langar-db-csvv.onrender.com/donations"),
+          fetch("https://langar-db-csvv.onrender.com/member-full-details"),
         ]);
 
         const donationJson = await donationRes.json();
@@ -350,7 +350,7 @@ const AllExpensesTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("https://langar-db-csvv.onrender.com//expenses");
+        const res = await fetch("https://langar-db-csvv.onrender.com/expenses");
         const json = await res.json();
 
         const parsedData = [];
