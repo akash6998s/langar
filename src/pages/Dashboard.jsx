@@ -116,7 +116,7 @@ export default function AttendanceTable() {
               : "bg-white text-orange-500"
           }`}
         >
-          Expense
+          Expenses
         </button>
         <button
           onClick={() => setActiveTab("donations")}
