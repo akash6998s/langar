@@ -80,35 +80,36 @@ const DonationsTable = () => {
 
         {/* Selectors */}
         <div className="flex flex-wrap justify-center gap-2 mb-10">
-          {/* Year Selector */}
-          <select
-            value={selectedYear}
-            onChange={(e) => {
-              setSelectedYear(e.target.value);
-              setSelectedMonth('');
-              setTableData([]);
-            }}
-            className="py-2 bg-[#fff9ec] border border-[#e3b04b] rounded-lg text-[#6b2400] shadow-sm focus:ring-2 focus:ring-[#e3b04b]"
-          >
-            <option value="">वर्ष चुनें (Select Year)</option>
-            {years.map((year) => (
-              <option key={year} value={year}>{year}</option>
-            ))}
-          </select>
+  {/* Year Selector */}
+  <select
+    value={selectedYear}
+    onChange={(e) => {
+      setSelectedYear(e.target.value);
+      setSelectedMonth('');
+      setTableData([]);
+    }}
+    className="w-full sm:w-48 py-2 bg-[#fff9ec] border border-[#e3b04b] rounded-lg text-[#6b2400] shadow-sm focus:ring-2 focus:ring-[#e3b04b]"
+  >
+    <option value="">वर्ष चुनें (Select Year)</option>
+    {years.map((year) => (
+      <option key={year} value={year}>{year}</option>
+    ))}
+  </select>
 
-          {/* Month Selector */}
-          <select
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            disabled={!selectedYear}
-            className="py-2 bg-[#fff9ec] border border-[#e3b04b] rounded-lg text-[#6b2400] shadow-sm focus:ring-2 focus:ring-[#e3b04b]"
-          >
-            <option value="">माह चुनें (Select Month)</option>
-            {months.map((month) => (
-              <option key={month} value={month}>{month}</option>
-            ))}
-          </select>
-        </div>
+  {/* Month Selector */}
+  <select
+    value={selectedMonth}
+    onChange={(e) => setSelectedMonth(e.target.value)}
+    disabled={!selectedYear}
+    className="w-full sm:w-48 py-2 bg-[#fff9ec] border border-[#e3b04b] rounded-lg text-[#6b2400] shadow-sm focus:ring-2 focus:ring-[#e3b04b]"
+  >
+    <option value="">माह चुनें (Select Month)</option>
+    {months.map((month) => (
+      <option key={month} value={month}>{month}</option>
+    ))}
+  </select>
+</div>
+
 
         {/* Total Donations Display */}
         {tableData.length > 0 && (
