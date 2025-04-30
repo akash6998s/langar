@@ -86,7 +86,7 @@ export default function AttendanceTable() {
     <div className="p-4 sm:p-6 bg-gradient-to-br from-yellow-50 to-orange-100 min-h-screen">
       <div className="flex justify-end mb-6">
         <button
-          to="/superadminlogin"
+          Link="/superadminlogin"
           className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-5 py-2 rounded-lg shadow-md transition"
         >
           Super Admin
