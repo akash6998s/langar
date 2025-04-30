@@ -72,10 +72,10 @@ const DonationsTable = () => {
   const months = selectedYear ? Object.keys(donationData[selectedYear]) : [];
 
   return (
-    <div className="bg-gradient-to-tr from-[#fffaf0] via-[#fdf4e3] to-[#fffaf0] min-h-screen py-10 px-4">
+    <div className="bg-gradient-to-tr from-[#fffaf0] via-[#fdf4e3] to-[#fffaf0] min-h-screen">
       <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-lg p-8 border border-[#f1d9a7]">
         <h2 className="text-4xl font-bold text-[#6b2400] text-center mb-10 tracking-wide">
-          मासिक दान सूची (Monthly Donations)
+          मासिक दान सूची
         </h2>
 
         {/* Selectors */}

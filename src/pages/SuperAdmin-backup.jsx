@@ -3,8 +3,18 @@ import axios from "axios";
 
 const SuperAdmin = () => {
   const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December",
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
   const daysInMonth = (month, year) => {
@@ -19,27 +29,27 @@ const SuperAdmin = () => {
   });
 
   const [expenseData, setExpenseData] = useState({
-    amount: "",
-    description: "",
+    attendance: "",
     month: "",
     year: "",
   });
 
   const [donationData, setDonationData] = useState({
-    amount: "",
-    rollNo: "",
+    attendance: "",
     month: "",
     year: "",
   });
 
   const [activeSection, setActiveSection] = useState("attendance");
   const [showRollNumberPopup, setShowRollNumberPopup] = useState(false);
+  // const [availableRollNumbers] = useState([...Array(100).keys()].map(num => (num + 1).toString()));
   const [availableRollNumbers, setAvailableRollNumbers] = useState([]);
-
   useEffect(() => {
     const fetchRollNumbers = async () => {
       try {
-        const response = await fetch("https://langar-db-csvv.onrender.com/member-full-details");
+        const response = await fetch(
+          "https://langar-db-csvv.onrender.com/member-full-details"
+        );
         const data = await response.json();
         const rollNumbers = data.map((member) => member.roll_no);
         setAvailableRollNumbers(rollNumbers);
@@ -112,14 +122,21 @@ const SuperAdmin = () => {
     }
 
     try {
-      const response = await axios.post("https://langar-db-csvv.onrender.com/update-attendance", {
-        attendance: filteredAttendance,
-        month,
-        year: Number(year),
-        day: Number(day),
-      });
+      const response = await axios.post(
+        "https://langar-db-csvv.onrender.com/update-attendance",
+        {
+          attendance: filteredAttendance,
+          month,
+          year: Number(year),
+          day: Number(day),
+        }
+      );
       alert(response.data.message);
-      setAttendanceData((prev) => ({ ...prev, attendance: {} }));
+
+      setAttendanceData((prev) => ({
+        ...prev,
+        attendance: {},
+      }));
     } catch (error) {
       console.error("Error posting attendance:", error);
       alert("Failed to add attendance.");
@@ -128,7 +145,7 @@ const SuperAdmin = () => {
 
   const addExpense = async () => {
     const { amount, description, month, year } = expenseData;
-    if (!amount || !description.trim()) {
+    if (!amount.trim() || !description.trim()) {
       alert("Amount and Description are required.");
       return;
     }
@@ -137,7 +154,7 @@ const SuperAdmin = () => {
       const response = await axios.post("https://langar-db-csvv.onrender.com/add-expense", {
         amount: Number(amount),
         description: description.trim(),
-        month,
+        month, // Month remains a string (e.g., "April")
         year: Number(year),
       });
       alert(response.data.message);
@@ -149,24 +166,29 @@ const SuperAdmin = () => {
   };
 
   const addDonation = async () => {
-    const { amount, rollNo, month, year } = donationData;
+    const { amount, month, year, rollNo } = donationData;
     if (!rollNo.trim() || !amount || !month || !year) {
       alert("All fields are required.");
       return;
     }
 
     try {
-      const response = await axios.post("https://langar-db-csvv.onrender.com/update-donations", {
-        year: Number(year),
-        month,
-        rollNo,
-        amount: Number(amount),
-      });
+      const response = await axios.post(
+        "https://langar-db-csvv.onrender.com/update-donations",
+        {
+          year: Number(year),
+          month,
+          rollNo,
+          amount: Number(amount),
+        }
+      );
       alert(response.data.message);
       setDonationData((prev) => ({
         ...prev,
         rollNo: "",
         amount: "",
+        month: "",
+        year: "",
       }));
     } catch (error) {
       console.error("Error posting donation:", error);
@@ -178,13 +200,16 @@ const SuperAdmin = () => {
     <div className="p-6 max-w-2xl mx-auto bg-white rounded-xl shadow-md space-y-6">
       <h1 className="text-2xl font-bold text-center">SuperAdmin Dashboard</h1>
 
+      {/* Section Toggle */}
       <div className="flex justify-center gap-4">
         {["attendance", "expense", "donation"].map((section) => (
           <button
             key={section}
             onClick={() => setActiveSection(section)}
             className={`px-4 py-2 rounded ${
-              activeSection === section ? "bg-blue-600 text-white" : "bg-gray-200"
+              activeSection === section
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200"
             }`}
           >
             {section.charAt(0).toUpperCase() + section.slice(1)}
@@ -196,6 +221,7 @@ const SuperAdmin = () => {
       {activeSection === "attendance" && (
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Add Attendance</h2>
+
           <select
             className="w-full border px-3 py-2 rounded"
             value={attendanceData.year}
@@ -203,7 +229,11 @@ const SuperAdmin = () => {
           >
             {[...Array(10)].map((_, i) => {
               const y = new Date().getFullYear() - 5 + i;
-              return <option key={y} value={y}>{y}</option>;
+              return (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              );
             })}
           </select>
 
@@ -213,7 +243,9 @@ const SuperAdmin = () => {
             onChange={(e) => handleMonthYearChange("month", e.target.value)}
           >
             {monthNames.map((month) => (
-              <option key={month} value={month}>{month}</option>
+              <option key={month} value={month}>
+                {month}
+              </option>
             ))}
           </select>
 
@@ -230,7 +262,9 @@ const SuperAdmin = () => {
                 attendanceData.year
               ),
             }).map((_, i) => (
-              <option key={i + 1} value={i + 1}>{i + 1}</option>
+              <option key={i + 1} value={i + 1}>
+                {i + 1}
+              </option>
             ))}
           </select>
 
@@ -296,21 +330,31 @@ const SuperAdmin = () => {
           <select
             className="w-full border px-3 py-2 rounded"
             value={expenseData.year}
-            onChange={(e) => setExpenseData({ ...expenseData, year: e.target.value })}
+            onChange={(e) =>
+              setExpenseData({ ...expenseData, year: e.target.value })
+            }
           >
             {[...Array(10)].map((_, i) => {
               const y = new Date().getFullYear() - 5 + i;
-              return <option key={y} value={y}>{y}</option>;
+              return (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              );
             })}
           </select>
 
           <select
             className="w-full border px-3 py-2 rounded"
             value={expenseData.month}
-            onChange={(e) => setExpenseData({ ...expenseData, month: e.target.value })}
+            onChange={(e) =>
+              setExpenseData({ ...expenseData, month: e.target.value })
+            }
           >
             {monthNames.map((month) => (
-              <option key={month} value={month}>{month}</option>
+              <option key={month} value={month}>
+                {month}
+              </option>
             ))}
           </select>
 
@@ -319,7 +363,9 @@ const SuperAdmin = () => {
             placeholder="Enter Amount"
             className="w-full border px-3 py-2 rounded"
             value={expenseData.amount}
-            onChange={(e) => setExpenseData({ ...expenseData, amount: e.target.value })}
+            onChange={(e) =>
+              setExpenseData({ ...expenseData, amount: e.target.value })
+            }
           />
 
           <input
@@ -349,21 +395,31 @@ const SuperAdmin = () => {
           <select
             className="w-full border px-3 py-2 rounded"
             value={donationData.year}
-            onChange={(e) => setDonationData({ ...donationData, year: e.target.value })}
+            onChange={(e) =>
+              setDonationData({ ...donationData, year: e.target.value })
+            }
           >
             {[...Array(10)].map((_, i) => {
               const y = new Date().getFullYear() - 5 + i;
-              return <option key={y} value={y}>{y}</option>;
+              return (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              );
             })}
           </select>
 
           <select
             className="w-full border px-3 py-2 rounded"
             value={donationData.month}
-            onChange={(e) => setDonationData({ ...donationData, month: e.target.value })}
+            onChange={(e) =>
+              setDonationData({ ...donationData, month: e.target.value })
+            }
           >
             {monthNames.map((month) => (
-              <option key={month} value={month}>{month}</option>
+              <option key={month} value={month}>
+                {month}
+              </option>
             ))}
           </select>
 
@@ -387,7 +443,9 @@ const SuperAdmin = () => {
             placeholder="Enter Amount"
             className="w-full border px-3 py-2 rounded"
             value={donationData.amount}
-            onChange={(e) => setDonationData({ ...donationData, amount: e.target.value })}
+            onChange={(e) =>
+              setDonationData({ ...donationData, amount: e.target.value })
+            }
           />
 
           <button

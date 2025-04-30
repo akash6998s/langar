@@ -35,9 +35,9 @@ const AllExpensesTable = () => {
   }, []);
 
   return (
-    <div className="p-8 max-w-7xl mx-auto shadow-2xl rounded-lg bg-gradient-to-r from-orange-100 to-yellow-200">
+    <div className="py-4 max-w-7xl mx-auto shadow-2xl rounded-lg bg-gradient-to-r from-orange-100 to-yellow-200">
       <h2 className="text-3xl font-semibold text-center text-orange-700 mb-8 tracking-wide">
-        📜 All Expense Records
+        📜 सभी खर्चों की जानकारी
       </h2>
 
       {expenses.length > 0 ? (
