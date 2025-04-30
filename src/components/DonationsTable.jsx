@@ -133,9 +133,9 @@ const DonationsTable = () => {
               <tbody className="text-gray-700">
                 {tableData.map((row) => (
                   <tr key={row.roll_no} className="hover:bg-[#fff6d0] transition-all">
-                    <td className="py-2 px-6 border border-[#f7e9bb]">{row.roll_no}</td>
-                    <td className="py-2 px-6 border border-[#f7e9bb]">{row.name}</td>
-                    <td className="py-2 px-6 border border-[#f7e9bb] font-semibold text-green-700">
+                    <td className="py-2 px-2 border border-[#f7e9bb]">{row.roll_no}</td>
+                    <td className="py-2 px-2 border border-[#f7e9bb]">{row.name}</td>
+                    <td className="py-2 px-2 border border-[#f7e9bb] font-semibold text-green-700">
                       ₹ {row.amount}
                     </td>
                   </tr>
