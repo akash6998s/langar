@@ -33,7 +33,7 @@ export default function AttendanceTable() {
     });
 
     // Fetch attendance data
-    fetch("https://langar-db-csvv.onrender.com/attendance")
+    fetch("http://localhost:5000/attendance")
       .then((res) => res.json())
       .then((data) => {
         const result = data[0];
@@ -54,7 +54,7 @@ export default function AttendanceTable() {
       });
 
     // Fetch student names
-    fetch("https://langar-db-csvv.onrender.com/member-full-details")
+    fetch("http://localhost:5000/member-full-details")
       .then((res) => res.json())
       .then((data) => {
         const formatted = {};

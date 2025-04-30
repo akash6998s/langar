@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AllExpensesTable from "../components/AllExpensesTable";
 import DonationsTable from "../components/DonationsTable";
-import {
-  Link
-} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const getDaysInMonth = (year, monthName) => {
   const monthIndex = new Date(`${monthName} 1, ${year}`).getMonth();
@@ -26,6 +24,7 @@ export default function AttendanceTable() {
   const [students, setStudents] = useState({});
   const [activeTab, setActiveTab] = useState("attendance");
   const [summaryData, setSummaryData] = useState({ totalDonations: 0, totalExpenses: 0, netAmount: 0 }); // New state for summary data
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch attendance data
@@ -86,7 +85,7 @@ export default function AttendanceTable() {
     <div className="p-4 sm:p-6 bg-gradient-to-br from-yellow-50 to-orange-100 min-h-screen">
       <div className="flex justify-end mb-6">
         <button
-          Link="/superadminlogin"
+          onClick={() => navigate("/superadminlogin")}
           className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-5 py-2 rounded-lg shadow-md transition"
         >
           Super Admin

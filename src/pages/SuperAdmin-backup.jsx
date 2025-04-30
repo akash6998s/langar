@@ -48,7 +48,7 @@ const SuperAdmin = () => {
     const fetchRollNumbers = async () => {
       try {
         const response = await fetch(
-          "https://langar-db-csvv.onrender.com/member-full-details"
+          "http://localhost:5000/member-full-details"
         );
         const data = await response.json();
         const rollNumbers = data.map((member) => member.roll_no);
@@ -123,7 +123,7 @@ const SuperAdmin = () => {
 
     try {
       const response = await axios.post(
-        "https://langar-db-csvv.onrender.com/update-attendance",
+        "http://localhost:5000/update-attendance",
         {
           attendance: filteredAttendance,
           month,
@@ -151,7 +151,7 @@ const SuperAdmin = () => {
     }
 
     try {
-      const response = await axios.post("https://langar-db-csvv.onrender.com/add-expense", {
+      const response = await axios.post("http://localhost:5000/add-expense", {
         amount: Number(amount),
         description: description.trim(),
         month, // Month remains a string (e.g., "April")
@@ -174,7 +174,7 @@ const SuperAdmin = () => {
 
     try {
       const response = await axios.post(
-        "https://langar-db-csvv.onrender.com/update-donations",
+        "http://localhost:5000/update-donations",
         {
           year: Number(year),
           month,
