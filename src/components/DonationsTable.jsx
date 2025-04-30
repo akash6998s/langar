@@ -73,13 +73,13 @@ const DonationsTable = () => {
 
   return (
     <div className="bg-gradient-to-tr from-[#fffaf0] via-[#fdf4e3] to-[#fffaf0] min-h-screen">
-      <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-lg p-8 border border-[#f1d9a7]">
+      <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-lg p-4 border border-[#f1d9a7]">
         <h2 className="text-4xl font-bold text-[#6b2400] text-center mb-10 tracking-wide">
           मासिक दान सूची
         </h2>
 
         {/* Selectors */}
-        <div className="flex flex-wrap justify-center gap-6 mb-10">
+        <div className="flex flex-wrap justify-center gap-2 mb-10">
           {/* Year Selector */}
           <select
             value={selectedYear}
@@ -88,7 +88,7 @@ const DonationsTable = () => {
               setSelectedMonth('');
               setTableData([]);
             }}
-            className="px-5 py-2 bg-[#fff9ec] border border-[#e3b04b] rounded-lg text-[#6b2400] shadow-sm focus:ring-2 focus:ring-[#e3b04b]"
+            className="py-2 bg-[#fff9ec] border border-[#e3b04b] rounded-lg text-[#6b2400] shadow-sm focus:ring-2 focus:ring-[#e3b04b]"
           >
             <option value="">वर्ष चुनें (Select Year)</option>
             {years.map((year) => (
@@ -101,7 +101,7 @@ const DonationsTable = () => {
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
             disabled={!selectedYear}
-            className="px-5 py-2 bg-[#fff9ec] border border-[#e3b04b] rounded-lg text-[#6b2400] shadow-sm focus:ring-2 focus:ring-[#e3b04b]"
+            className="py-2 bg-[#fff9ec] border border-[#e3b04b] rounded-lg text-[#6b2400] shadow-sm focus:ring-2 focus:ring-[#e3b04b]"
           >
             <option value="">माह चुनें (Select Month)</option>
             {months.map((month) => (
