@@ -97,7 +97,7 @@ export default function AttendanceTable() {
       <div className="flex justify-between items-center mb-6">
         {/* Logo on the left with half width */}
         <div className="w-1/2 flex justify-start">
-          <img src={logo} alt="logo" />
+          <img className="w-24 h-auto object-contain" src={logo} alt="logo" />
         </div>
 
         {/* Button on the right with half width */}
