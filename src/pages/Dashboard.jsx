@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import AllExpensesTable from "../components/AllExpensesTable";
 import DonationsTable from "../components/DonationsTable";
 import { useNavigate } from "react-router-dom";
-import logo from '../assets/logo.png'
+import logo from "../assets/logo.png";
 
 const getDaysInMonth = (year, monthName) => {
   const monthIndex = new Date(`${monthName} 1, ${year}`).getMonth();
@@ -24,7 +24,11 @@ export default function AttendanceTable() {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [students, setStudents] = useState({});
   const [activeTab, setActiveTab] = useState("attendance");
-  const [summaryData, setSummaryData] = useState({ totalDonations: 0, totalExpenses: 0, netAmount: 0 }); // New state for summary data
+  const [summaryData, setSummaryData] = useState({
+    totalDonations: 0,
+    totalExpenses: 0,
+    netAmount: 0,
+  }); // New state for summary data
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,9 +42,13 @@ export default function AttendanceTable() {
         const years = Object.keys(result);
         if (years.length > 0) {
           const currentYear = new Date().getFullYear().toString();
-          const defaultYear = years.includes(currentYear) ? currentYear : years[0];
+          const defaultYear = years.includes(currentYear)
+            ? currentYear
+            : years[0];
           const months = Object.keys(result[defaultYear]);
-          const defaultMonth = months.includes(new Date().toLocaleString("default", { month: "long" }))
+          const defaultMonth = months.includes(
+            new Date().toLocaleString("default", { month: "long" })
+          )
             ? new Date().toLocaleString("default", { month: "long" })
             : months[0];
           setSelectedYear(defaultYear);
@@ -80,33 +88,46 @@ export default function AttendanceTable() {
   };
 
   const daysInMonth =
-    selectedYear && selectedMonth ? getDaysInMonth(selectedYear, selectedMonth) : [];
+    selectedYear && selectedMonth
+      ? getDaysInMonth(selectedYear, selectedMonth)
+      : [];
 
   return (
     <div className="p-4 sm:p-6 bg-gradient-to-br from-yellow-50 to-orange-100 min-h-screen">
-      <div className="flex justify-start mb-6">
-        <img src={logo} alt="logo" />
-      </div>
-      <div className="flex justify-end mb-6">
-        <button
-          onClick={() => navigate("/superadminlogin")}
-          className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-5 py-2 rounded-lg shadow-md transition"
-        >
-          Super Admin
-        </button>
+      <div className="flex justify-between items-center mb-6">
+        {/* Logo on the left with half width */}
+        <div className="w-1/2 flex justify-start">
+          <img src={logo} alt="logo" />
+        </div>
+
+        {/* Button on the right with half width */}
+        <div className="w-1/2 flex justify-end">
+          <button
+            onClick={() => navigate("/superadminlogin")}
+            className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-5 py-2 rounded-lg shadow-md transition"
+          >
+            Super Admin
+          </button>
+        </div>
       </div>
       <h1 className="text-2xl text-center font-bold text-orange-700 mb-6 underline decoration-orange-400">
-      श्री सुदर्शन सेना भोजन वितरण
+        श्री सुदर्शन सेना भोजन वितरण
       </h1>
 
       {/* Summary Data Boxes */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
         <div className="p-4 bg-orange-200 rounded-lg shadow-md text-center">
-          <h3 className="text-lg font-semibold text-orange-800">Total Donations</h3>
-          <p className="text-2xl text-green-600">{summaryData.totalDonations}</p>
+          <h3 className="text-lg font-semibold text-orange-800">
+            Total Donations
+          </h3>
+          <p className="text-2xl text-green-600">
+            {summaryData.totalDonations}
+          </p>
         </div>
         <div className="p-4 bg-orange-200 rounded-lg shadow-md text-center">
-          <h3 className="text-lg font-semibold text-orange-800">Total Expenses</h3>
+          <h3 className="text-lg font-semibold text-orange-800">
+            Total Expenses
+          </h3>
           <p className="text-2xl text-red-600">{summaryData.totalExpenses}</p>
         </div>
         <div className="p-4 bg-orange-200 rounded-lg shadow-md text-center">
@@ -120,7 +141,9 @@ export default function AttendanceTable() {
         <button
           onClick={() => setActiveTab("attendance")}
           className={`px-2 py-2 border rounded-md w-24 sm:w-40 text-center ${
-            activeTab === "attendance" ? "bg-orange-500 text-white" : "bg-white text-orange-500"
+            activeTab === "attendance"
+              ? "bg-orange-500 text-white"
+              : "bg-white text-orange-500"
           }`}
         >
           Attendance
@@ -128,7 +151,9 @@ export default function AttendanceTable() {
         <button
           onClick={() => setActiveTab("expense")}
           className={`px-2 py-2 border rounded-md w-24 sm:w-40 text-center ${
-            activeTab === "expense" ? "bg-orange-500 text-white" : "bg-white text-orange-500"
+            activeTab === "expense"
+              ? "bg-orange-500 text-white"
+              : "bg-white text-orange-500"
           }`}
         >
           Expenses
@@ -136,7 +161,9 @@ export default function AttendanceTable() {
         <button
           onClick={() => setActiveTab("donations")}
           className={`px-2 py-2 border rounded-md w-24 sm:w-40 text-center ${
-            activeTab === "donations" ? "bg-orange-500 text-white" : "bg-white text-orange-500"
+            activeTab === "donations"
+              ? "bg-orange-500 text-white"
+              : "bg-white text-orange-500"
           }`}
         >
           Donations
