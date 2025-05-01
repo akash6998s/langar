@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AllExpensesTable from "../components/AllExpensesTable";
 import DonationsTable from "../components/DonationsTable";
 import { useNavigate } from "react-router-dom";
+import logo from '../../public/logo192.png'
 
 const getDaysInMonth = (year, monthName) => {
   const monthIndex = new Date(`${monthName} 1, ${year}`).getMonth();
@@ -83,6 +84,9 @@ export default function AttendanceTable() {
 
   return (
     <div className="p-4 sm:p-6 bg-gradient-to-br from-yellow-50 to-orange-100 min-h-screen">
+      <div className="flex justify-start mb-6">
+        <img src={logo} alt="logo" />
+      </div>
       <div className="flex justify-end mb-6">
         <button
           onClick={() => navigate("/superadminlogin")}
