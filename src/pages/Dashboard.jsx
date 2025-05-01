@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import AllExpensesTable from "../components/AllExpensesTable";
 import DonationsTable from "../components/DonationsTable";
 import { useNavigate } from "react-router-dom";
-import logo from '../../public/logo192.png'
+import logo from '../assets/logo.png'
 
 const getDaysInMonth = (year, monthName) => {
   const monthIndex = new Date(`${monthName} 1, ${year}`).getMonth();
