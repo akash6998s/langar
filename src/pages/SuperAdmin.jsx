@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import credentials from "../data/admin.json";
+import { useNavigate } from "react-router-dom";
 
 const SuperAdmin = () => {
   const monthNames = [
@@ -47,7 +49,7 @@ const SuperAdmin = () => {
   useEffect(() => {
     const fetchRollNumbers = async () => {
       try {
-        const res = await fetch("https://langar-db-csvv.onrender.com/member-full-details");
+        const res = await fetch("http://localhost:5000/member-full-details");
         const data = await res.json();
         setAvailableRollNumbers(data.map((m) => m.roll_no));
       } catch (err) {
@@ -57,12 +59,42 @@ const SuperAdmin = () => {
     fetchRollNumbers();
   }, []);
 
+  const navigate = useNavigate(); // Call at the top level
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = '';  // Trigger prompt message
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
+
+
+  useEffect(() => {
+    const superAdminId = sessionStorage.getItem("superAdminId");
+    const superAdminPassword = sessionStorage.getItem("superAdminPassword");
+
+    const isAuthorized = (
+      superAdminId === credentials.superAdmin_login.id &&
+      superAdminPassword === credentials.superAdmin_login.password
+    );
+
+    if (!isAuthorized) {
+      navigate("/"); // Redirect if not authorized
+    }
+  }, [navigate]);
+
   useEffect(() => {
     const date = new Date();
     const month = monthNames[date.getMonth()];
     const year = date.getFullYear();
     const day = date.getDate();
-
     setAttendanceData((prev) => ({
       ...prev,
       month,
@@ -91,7 +123,7 @@ const SuperAdmin = () => {
     const filtered = Object.keys(attendance).filter((r) => attendance[r]);
     if (filtered.length === 0) return alert("No roll numbers selected.");
     try {
-      const res = await axios.post("https://langar-db-csvv.onrender.com/update-attendance", {
+      const res = await axios.post("http://localhost:5000/update-attendance", {
         attendance: filtered,
         month,
         year: Number(year),
@@ -105,19 +137,38 @@ const SuperAdmin = () => {
     }
   };
 
+  const deleteAttendance = async () => {
+    const { attendance, month, year, day } = attendanceData;
+    const filtered = Object.keys(attendance).filter((r) => attendance[r]);
+    if (filtered.length === 0) return alert("No roll numbers selected.");
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/delete-attendance", // Ensure backend route exists
+        { attendance: filtered, month, year: Number(year), day: Number(day) }
+      );
+      alert(res.data.message);
+      setAttendanceData((prev) => ({ ...prev, attendance: {} }));
+    } catch (err) {
+      console.error("Error deleting attendance:", err);
+      const message =
+        err.response?.data?.error || "Failed to delete attendance.";
+      alert(message);
+    }
+  };
+
   const addExpense = async () => {
     const { amount, description, month, year } = expenseData;
     if (!amount || !description.trim())
       return alert("Amount and Description required.");
     try {
-      const res = await axios.post("https://langar-db-csvv.onrender.com/add-expense", {
+      const res = await axios.post("http://localhost:5000/add-expense", {
         amount: Number(amount),
         description: description.trim(),
         month,
         year: Number(year),
       });
       alert(res.data.message);
-      setExpenseData((prev) => ({ ...prev, amount: "", description: "" }));
+      setExpenseData({ ...expenseData, amount: "", description: "" });
     } catch (err) {
       console.error("Error adding expense:", err);
       alert("Failed to add expense.");
@@ -129,26 +180,106 @@ const SuperAdmin = () => {
     if (!rollNo || !amount || !month || !year)
       return alert("All fields are required.");
     try {
-      const res = await axios.post("https://langar-db-csvv.onrender.com/update-donations", {
+      const res = await axios.post("http://localhost:5000/update-donations", {
         rollNo,
         amount: Number(amount),
         month,
         year: Number(year),
       });
       alert(res.data.message);
-      setDonationData((prev) => ({ ...prev, amount: "", rollNo: "" }));
+      setDonationData({ ...donationData, amount: "", rollNo: "" });
     } catch (err) {
       console.error("Error adding donation:", err);
       alert("Failed to add donation.");
     }
   };
 
+  const renderSelectFields = () => (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <select
+        className="border px-3 py-2 rounded"
+        value={attendanceData.year}
+        onChange={(e) => handleMonthYearChange("year", e.target.value)}
+      >
+        {[...Array(10)].map((_, i) => {
+          const y = new Date().getFullYear() - 5 + i;
+          return (
+            <option key={y} value={y}>
+              {y}
+            </option>
+          );
+        })}
+      </select>
+
+      <select
+        className="border px-3 py-2 rounded"
+        value={attendanceData.month}
+        onChange={(e) => handleMonthYearChange("month", e.target.value)}
+      >
+        {monthNames.map((month) => (
+          <option key={month} value={month}>
+            {month}
+          </option>
+        ))}
+      </select>
+
+      <select
+        className="border px-3 py-2 rounded"
+        value={attendanceData.day}
+        onChange={(e) =>
+          setAttendanceData({ ...attendanceData, day: e.target.value })
+        }
+      >
+        {Array.from({
+          length: daysInMonth(
+            monthNames.indexOf(attendanceData.month) + 1,
+            attendanceData.year
+          ),
+        }).map((_, i) => (
+          <option key={i + 1} value={i + 1}>
+            {i + 1}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+
+  const renderRollNoPopup = () =>
+    showRollNumberPopup && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white w-[90%] max-w-md rounded-lg p-5 shadow-lg">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold">Select Roll Numbers</h3>
+            <button
+              onClick={() => setShowRollNumberPopup(false)}
+              className="text-red-500 hover:underline"
+            >
+              Close
+            </button>
+          </div>
+          <div className="grid grid-cols-5 gap-2 max-h-64 overflow-y-auto">
+            {availableRollNumbers.map((rollNo) => (
+              <button
+                key={rollNo}
+                onClick={() => handleRollNoClick(rollNo)}
+                className={`px-2 py-1 border rounded text-sm ${
+                  attendanceData.attendance[rollNo]
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100"
+                }`}
+              >
+                {rollNo}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+
   return (
     <div className="p-6 max-w-3xl mx-auto bg-white rounded-xl shadow space-y-6">
       <button
-        onClick={() => {
-          window.location.href = "/";
-        }}
+        onClick={() => (window.location.href = "/")}
         className="mb-4 px-4 py-2 bg-red-500 hover:bg-red-700 text-white rounded"
       >
         ← Back
@@ -158,73 +289,34 @@ const SuperAdmin = () => {
         SuperAdmin Dashboard
       </h1>
 
-      <div className="flex justify-center gap-4">
-        {["attendance", "expense", "donation"].map((section) => (
-          <button
-            key={section}
-            onClick={() => setActiveSection(section)}
-            className={`px-4 py-2 rounded-md transition font-semibold ${
-              activeSection === section
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 hover:bg-gray-300"
-            }`}
-          >
-            {section.charAt(0).toUpperCase() + section.slice(1)}
-          </button>
-        ))}
+      <div className="flex justify-center gap-4 flex-wrap">
+        {["attendance", "expense", "donation", "deleteAttendance"].map(
+          (section) => (
+            <button
+              key={section}
+              onClick={() => setActiveSection(section)}
+              className={`px-4 py-2 rounded-md transition font-semibold ${
+                activeSection === section
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 hover:bg-gray-300"
+              }`}
+            >
+              {section.charAt(0).toUpperCase() + section.slice(1)}
+            </button>
+          )
+        )}
       </div>
 
-      {activeSection === "attendance" && (
+      {(activeSection === "attendance" ||
+        activeSection === "deleteAttendance") && (
         <div className="space-y-4">
           <h2 className="text-xl font-semibold text-blue-700">
-            Add Attendance
+            {activeSection === "attendance"
+              ? "Add Attendance"
+              : "Delete Attendance"}
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <select
-              className="border px-3 py-2 rounded"
-              value={attendanceData.year}
-              onChange={(e) => handleMonthYearChange("year", e.target.value)}
-            >
-              {[...Array(10)].map((_, i) => {
-                const y = new Date().getFullYear() - 5 + i;
-                return (
-                  <option key={y} value={y}>
-                    {y}
-                  </option>
-                );
-              })}
-            </select>
-
-            <select
-              className="border px-3 py-2 rounded"
-              value={attendanceData.month}
-              onChange={(e) => handleMonthYearChange("month", e.target.value)}
-            >
-              {monthNames.map((month) => (
-                <option key={month}>{month}</option>
-              ))}
-            </select>
-
-            <select
-              className="border px-3 py-2 rounded"
-              value={attendanceData.day}
-              onChange={(e) =>
-                setAttendanceData({ ...attendanceData, day: e.target.value })
-              }
-            >
-              {Array.from({
-                length: daysInMonth(
-                  monthNames.indexOf(attendanceData.month) + 1,
-                  attendanceData.year
-                ),
-              }).map((_, i) => (
-                <option key={i + 1} value={i + 1}>
-                  {i + 1}
-                </option>
-              ))}
-            </select>
-          </div>
+          {renderSelectFields()}
 
           <div className="flex gap-2 items-center">
             <input
@@ -242,42 +334,17 @@ const SuperAdmin = () => {
             </button>
           </div>
 
-          {showRollNumberPopup && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white w-[90%] max-w-md rounded-lg p-5 shadow-lg">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-semibold">Select Roll Numbers</h3>
-                  <button
-                    onClick={() => setShowRollNumberPopup(false)}
-                    className="text-red-500 hover:underline"
-                  >
-                    Close
-                  </button>
-                </div>
-                <div className="grid grid-cols-5 gap-2 max-h-64 overflow-y-auto">
-                  {availableRollNumbers.map((rollNo) => (
-                    <button
-                      key={rollNo}
-                      onClick={() => handleRollNoClick(rollNo)}
-                      className={`px-2 py-1 border rounded text-sm ${
-                        attendanceData.attendance[rollNo]
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-100"
-                      }`}
-                    >
-                      {rollNo}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+          {renderRollNoPopup()}
 
           <button
-            onClick={addAttendance}
+            onClick={
+              activeSection === "attendance" ? addAttendance : deleteAttendance
+            }
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
           >
-            Add Attendance
+            {activeSection === "attendance"
+              ? "Add Attendance"
+              : "Delete Attendance"}
           </button>
         </div>
       )}
