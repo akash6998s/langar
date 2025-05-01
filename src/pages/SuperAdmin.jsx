@@ -46,10 +46,18 @@ const SuperAdmin = () => {
   const [showRollNumberPopup, setShowRollNumberPopup] = useState(false);
   const [availableRollNumbers, setAvailableRollNumbers] = useState([]);
 
+  const sections = [
+    { key: "attendance", label: "Attendance" },
+    { key: "expense", label: "Expense" },
+    { key: "donation", label: "Donation" },
+    { key: "deleteAttendance", label: "Delete Attendance" },
+  ];
+  
+
   useEffect(() => {
     const fetchRollNumbers = async () => {
       try {
-        const res = await fetch("http://localhost:5000/member-full-details");
+        const res = await fetch("https://langar-db-csvv.onrender.com/member-full-details");
         const data = await res.json();
         setAvailableRollNumbers(data.map((m) => m.roll_no));
       } catch (err) {
@@ -123,7 +131,7 @@ const SuperAdmin = () => {
     const filtered = Object.keys(attendance).filter((r) => attendance[r]);
     if (filtered.length === 0) return alert("No roll numbers selected.");
     try {
-      const res = await axios.post("http://localhost:5000/update-attendance", {
+      const res = await axios.post("https://langar-db-csvv.onrender.com/update-attendance", {
         attendance: filtered,
         month,
         year: Number(year),
@@ -143,7 +151,7 @@ const SuperAdmin = () => {
     if (filtered.length === 0) return alert("No roll numbers selected.");
     try {
       const res = await axios.post(
-        "http://localhost:5000/delete-attendance", // Ensure backend route exists
+        "https://langar-db-csvv.onrender.com/delete-attendance", // Ensure backend route exists
         { attendance: filtered, month, year: Number(year), day: Number(day) }
       );
       alert(res.data.message);
@@ -161,7 +169,7 @@ const SuperAdmin = () => {
     if (!amount || !description.trim())
       return alert("Amount and Description required.");
     try {
-      const res = await axios.post("http://localhost:5000/add-expense", {
+      const res = await axios.post("https://langar-db-csvv.onrender.com/add-expense", {
         amount: Number(amount),
         description: description.trim(),
         month,
@@ -180,7 +188,7 @@ const SuperAdmin = () => {
     if (!rollNo || !amount || !month || !year)
       return alert("All fields are required.");
     try {
-      const res = await axios.post("http://localhost:5000/update-donations", {
+      const res = await axios.post("https://langar-db-csvv.onrender.com/update-donations", {
         rollNo,
         amount: Number(amount),
         month,
@@ -290,22 +298,21 @@ const SuperAdmin = () => {
       </h1>
 
       <div className="flex justify-center gap-4 flex-wrap">
-        {["attendance", "expense", "donation", "deleteAttendance"].map(
-          (section) => (
-            <button
-              key={section}
-              onClick={() => setActiveSection(section)}
-              className={`px-4 py-2 rounded-md transition font-semibold ${
-                activeSection === section
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 hover:bg-gray-300"
-              }`}
-            >
-              {section.charAt(0).toUpperCase() + section.slice(1)}
-            </button>
-          )
-        )}
-      </div>
+  {sections.map(({ key, label }) => (
+    <button
+      key={key}
+      onClick={() => setActiveSection(key)}
+      className={`px-4 py-2 rounded-md transition font-semibold ${
+        activeSection === key
+          ? "bg-blue-600 text-white"
+          : "bg-gray-200 hover:bg-gray-300"
+      }`}
+    >
+      {label}
+    </button>
+  ))}
+</div>
+
 
       {(activeSection === "attendance" ||
         activeSection === "deleteAttendance") && (
