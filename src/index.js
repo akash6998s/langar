@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-// import { register } from './serviceWorkerRegistration'; // Import service worker registration
+import { register } from './serviceWorkerRegistration'; // Import service worker registration
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -13,4 +13,4 @@ root.render(
 );
 
 // Register the service worker
-// register();
+register();
