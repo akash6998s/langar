@@ -114,7 +114,7 @@ const DonationsTable = () => {
         {tableData.length > 0 && (
           <div className="text-center mb-8">
             <span className="text-xl font-bold text-green-800 bg-green-100 px-6 py-2 rounded-full shadow-sm">
-              कुल दान राशि: ₹ {totalDonations}
+            इस महीने की प्राप्त राशि: ₹ {totalDonations}
             </span>
           </div>
         )}
