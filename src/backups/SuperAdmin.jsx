@@ -51,10 +51,10 @@ const SuperAdmin = () => {
   const [availableRollNumbers, setAvailableRollNumbers] = useState([]);
 
   const sections = [
-    { key: "attendance", label: "Add Attendance" },
-    { key: "deleteAttendance", label: "Remove Attendance" },
-    { key: "expense", label: "Add Expense" },
-    { key: "donation", label: "Add Donation" },
+    { key: "attendance", label: "Attendance" },
+    { key: "expense", label: "Expense" },
+    { key: "donation", label: "Donation" },
+    { key: "deleteAttendance", label: "Delete Attendance" },
     { key: "addMember", label: "Add Member" },
     { key: "deleteMember", label: "Remove Member" },
   ];
@@ -400,25 +400,25 @@ const SuperAdmin = () => {
     );
 
   return (
-    <div className="p-8 max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl space-y-10">
+    <div className="p-6 max-w-4xl mx-auto bg-white rounded-2xl shadow-xl space-y-8">
       <button
         onClick={() => (window.location.href = "/")}
         className="inline-block text-sm text-red-800 hover:text-red-600 font-semibold transition"
       >
-        <span className="mb-2">← </span>Back to Home
+        ← Back to Home
       </button>
 
-      <h1 className="text-2xl font-extrabold text-center text-orange-700">
+      <h1 className="text-4xl font-extrabold text-center text-orange-700">
         SuperAdmin Dashboard
       </h1>
 
       {/* Section Buttons */}
-      <div className="flex justify-center gap-4 flex-wrap">
+      <div className="flex justify-center gap-3 flex-wrap">
         {sections.map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setActiveSection(key)}
-            className={`w-40 text-center px-5 py-2 rounded-full font-medium transition duration-200 shadow-sm ${
+            className={`px-5 py-2 rounded-full font-medium transition duration-200 shadow-sm ${
               activeSection === key
                 ? "bg-indigo-700 text-white"
                 : "bg-orange-200 text-orange-900 hover:bg-orange-300"
