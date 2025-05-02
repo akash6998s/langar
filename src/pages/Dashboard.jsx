@@ -36,9 +36,11 @@ export default function AttendanceTable() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://langar-db-csvv.onrender.com/additional");
+        const response = await fetch(
+          "https://langar-db-csvv.onrender.com/additional"
+        );
         const result = await response.json();
-        console.log(result)
+        console.log(result);
         setAdditionalData(result.donatedRemoved);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -110,18 +112,16 @@ export default function AttendanceTable() {
 
   return (
     <div className="p-4 sm:p-6 bg-gradient-to-br from-yellow-50 to-orange-100 min-h-screen">
-      <div className="flex justify-between items-center mb-6">
+      <div className="w-full flex justify-end px-6 py-4 mb-6">
         {/* <div className="w-1/2 flex justify-start">
           <img className="w-24 h-auto object-contain" src={logo} alt="logo" />
         </div> */}
-        <div className="w-1/2 flex justify-end">
-          <button
-            onClick={() => navigate("/superadminlogin")}
-            className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-5 py-2 rounded-lg shadow-md transition"
-          >
-            Super Admin
-          </button>
-        </div>
+        <button
+          onClick={() => navigate("/superadminlogin")}
+          className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-5 py-2 rounded-lg shadow-md transition"
+        >
+          Super Admin
+        </button>
       </div>
 
       <h1 className="text-2xl text-center font-bold text-orange-700 mb-6 underline decoration-orange-400">
@@ -149,7 +149,9 @@ export default function AttendanceTable() {
         </div>
         <div className="p-4 bg-orange-200 rounded-lg shadow-md text-center">
           <h3 className="text-lg font-semibold text-orange-800">Net Amount</h3>
-          <p className="text-2xl text-blue-600">{summaryData.netAmount + additionalData}</p>
+          <p className="text-2xl text-blue-600">
+            {summaryData.netAmount + additionalData}
+          </p>
         </div>
       </div>
 

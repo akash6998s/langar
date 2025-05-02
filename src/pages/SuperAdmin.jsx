@@ -413,7 +413,7 @@ const SuperAdmin = () => {
       </h1>
 
       {/* Section Buttons */}
-      <div className="flex justify-center gap-4 flex-wrap">
+      <div className="flex justify-center gap-3 flex-wrap">
         {sections.map(({ key, label }) => (
           <button
             key={key}
