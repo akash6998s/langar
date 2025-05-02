@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import credentials from "../data/admin.json";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +18,7 @@ const SuperAdmin = () => {
     "November",
     "December",
   ];
-
+  const inputRef = useRef(null);
   const daysInMonth = (month, year) => new Date(year, month, 0).getDate();
 
   const [attendanceData, setAttendanceData] = useState({
@@ -213,7 +213,18 @@ const SuperAdmin = () => {
   const addAttendance = async () => {
     const { attendance, month, year, day } = attendanceData;
     const filtered = Object.keys(attendance).filter((r) => attendance[r]);
+
     if (filtered.length === 0) return alert("No roll numbers selected.");
+
+    // Set input value and copy to clipboard
+    if (inputRef.current) {
+      inputRef.current.value = filtered.join(", ");
+      navigator.clipboard
+        .writeText(inputRef.current.value)
+        .then(() => console.log("Copied to clipboard"))
+        .catch((err) => console.error("Clipboard copy failed", err));
+    }
+
     try {
       const res = await axios.post(
         "https://langar-db-csvv.onrender.com/update-attendance",
@@ -443,6 +454,7 @@ const SuperAdmin = () => {
 
           <div className="flex gap-3 items-center">
             <input
+              ref={inputRef}
               readOnly
               type="text"
               placeholder="Selected Roll Numbers"

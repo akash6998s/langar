@@ -157,7 +157,7 @@ export default function AttendanceTable() {
 
       {/* Navigation Tabs */}
       <div className="flex flex-wrap justify-center gap-4 mb-6">
-        {["attendance", "expense", "donations"].map((tab) => (
+        {["attendance", "expenses", "donations"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
