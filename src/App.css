@@ -10,7 +10,7 @@
     background-position: center;
     background-repeat: no-repeat;
     image-rendering: auto; /* Use 'crisp-edges' or 'high-quality' if supported */
-    opacity: 0.15;
+    opacity: 0.25;
     z-index: -1;
   }
   

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import AllExpensesTable from "../components/AllExpensesTable";
 import DonationsTable from "../components/DonationsTable";
 import FinanceTable from "../components/FinanceTable";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const getDaysInMonth = (year, monthName) => {
   const monthIndex = new Date(`${monthName} 1, ${year}`).getMonth();
@@ -26,7 +26,6 @@ export default function AttendanceTable() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("attendance");
 
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -81,10 +80,13 @@ export default function AttendanceTable() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-16 h-16 border-8 border-dashed border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <div className="text-blue-600 font-semibold text-xl">Loading...</div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-t from-indigo-100 via-orange-200 to-white">
+        <div className="flex flex-col items-center space-y-6">
+          {/* Spinner with a soft color */}
+          <div className="w-16 h-16 border-8 border-solid border-transparent border-t-orange-600 rounded-full animate-spin"></div>
+
+          {/* Spiritual Text with 'Jai Gurudev' */}
+          <div className="text-orange-700 font-semibold text-2xl">Loading</div>
         </div>
       </div>
     );
@@ -108,21 +110,21 @@ export default function AttendanceTable() {
     <div className="p-4 sm:p-6 bg-gradient-to-br min-h-screen">
       {/* Super Admin Button */}
       <div className="w-full flex justify-end px-6 py-4 mb-6">
-        <button
-          onClick={() => navigate("/superadminlogin")}
-          className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-5 py-2 rounded-lg shadow-md transition"
-        >
-          Super Admin
-        </button>
+      <Link
+  to="/superadminlogin"
+  className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-5 py-2 rounded-lg shadow-md transition inline-block text-center"
+>
+  Super Admin
+</Link>
       </div>
 
       {/* Title Section */}
-      <h1 className="text-2xl text-center font-bold text-orange-700 mb-6 underline decoration-orange-400">
-        श्री सुदर्शन सेना भोजन वितरण
+      <h1 className="text-3xl sm:text-3xl text-center font-semibold text-[#5c2d06] mb-8 tracking-wider decoration-[#e3b04b] underline-offset-8">
+        श्री सुदर्शन सेना <br /> भोजन वितरण
       </h1>
 
       {/* Finance Table */}
-      <FinanceTable  />
+      <FinanceTable />
 
       {/* Navigation Tabs for Attendance, Expenses, and Donations */}
       <div className="flex flex-wrap justify-center gap-4 mb-6">
@@ -130,11 +132,12 @@ export default function AttendanceTable() {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-2 py-2 border rounded-md w-24 sm:w-40 text-center ${
-              activeTab === tab
-                ? "bg-orange-500 text-white"
-                : "bg-white text-orange-500"
-            }`}
+            className={`px-4 py-2 rounded-lg w-28 sm:w-44 text-center text-sm font-semibold tracking-wide transition duration-300 border
+        ${
+          activeTab === tab
+            ? "bg-orange-500 text-white border-orange-500 shadow-inner"
+            : "bg-white text-orange-600 border-orange-300 hover:bg-orange-50"
+        }`}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>
@@ -179,10 +182,10 @@ export default function AttendanceTable() {
           <table className="w-full text-sm text-center border border-gray-300 bg-white rounded-lg">
             <thead className="bg-orange-100 text-orange-800">
               <tr>
-                <th className="border border-gray-300 px-3 py-2 sticky top-0 left-0 bg-orange-100 z-10">
+                <th className="border border-gray-300 px-2 py-2 sticky top-0 left-0 bg-orange-100 z-10">
                   Roll No
                 </th>
-                <th className="border border-gray-300 px-3 py-2 sticky top-0 left-0 bg-orange-100 z-10">
+                <th className="border border-gray-300 px-2 py-2 sticky top-0 left-0 bg-orange-100 z-10">
                   Name
                 </th>
                 {daysInMonth.map(({ date, day }) => (
@@ -216,7 +219,20 @@ export default function AttendanceTable() {
                         key={date}
                         className="border border-gray-100 px-2 py-2 text-green-600"
                       >
-                        {present[roll] === "present" ? "✔️" : ""}
+                        {present[roll] === "present" && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-5 h-5 text-green-700 inline-block"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
                       </td>
                     );
                   })}

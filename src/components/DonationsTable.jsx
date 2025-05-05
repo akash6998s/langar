@@ -97,14 +97,14 @@ const DonationsTable = () => {
   const months = selectedYear ? Object.keys(donationData[selectedYear]) : [];
 
   return (
-    <div className="bg-gradient-to-tr from-[#fffaf0] via-[#fdf4e3] to-[#fffaf0] min-h-screen">
-      <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-lg p-4 border border-[#f1d9a7]">
-        <h2 className="text-4xl font-bold text-[#6b2400] text-center mb-10 tracking-wide">
+    <div className="rounded-3xl bg-gradient-to-tr from-[#fffaf0] via-[#fef4dd] to-[#fffaf0] min-h-screen">
+      <div className="max-w-6xl overflow-hidden mx-auto bg-white rounded-3xl shadow-xl p-6 border border-[#e8c98e]">
+        <h2 className="text-4xl font-semibold text-[#5c2d06] text-center mb-10 tracking-wider">
           मासिक दान सूची
         </h2>
 
         {/* Selectors */}
-        <div className="flex flex-wrap justify-center gap-4 mb-10">
+        <div className="flex flex-wrap justify-center gap-6 mb-10">
           {/* Year Selector */}
           <select
             value={selectedYear}
@@ -113,9 +113,9 @@ const DonationsTable = () => {
               setSelectedMonth("");
               setTableData([]);
             }}
-            className="px-4 py-2 border border-[#e3b04b] rounded-lg w-full sm:w-48 bg-[#fff9ec] text-[#6b2400] shadow-sm focus:ring-2 focus:ring-[#e3b04b]"
+            className="px-5 py-2 border border-[#e3b04b] rounded-xl w-full sm:w-52 bg-[#fff9ec] text-[#5c2d06] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#e3b04b]"
           >
-            <option value="">वर्ष चुनें (Select Year)</option>
+            <option value="">वर्ष चुनें</option>
             {years.map((year) => (
               <option key={year} value={year}>
                 {year}
@@ -128,9 +128,9 @@ const DonationsTable = () => {
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
             disabled={!selectedYear}
-            className="px-4 py-2 border border-[#e3b04b] rounded-lg w-full sm:w-48 bg-[#fff9ec] text-[#6b2400] shadow-sm focus:ring-2 focus:ring-[#e3b04b]"
+            className="px-5 py-2 border border-[#e3b04b] rounded-xl w-full sm:w-52 bg-[#fff9ec] text-[#5c2d06] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#e3b04b]"
           >
-            <option value="">माह चुनें (Select Month)</option>
+            <option value="">माह चुनें</option>
             {months.map((month) => (
               <option key={month} value={month}>
                 {month}
@@ -139,10 +139,10 @@ const DonationsTable = () => {
           </select>
         </div>
 
-        {/* Total Donations Display */}
+        {/* Total Donations */}
         {tableData.length > 0 && (
           <div className="text-center mb-8">
-            <span className="text-xl font-bold text-green-800 bg-green-100 px-6 py-2 rounded-full shadow-sm">
+            <span className="text-xl font-semibold text-green-900 bg-green-100 px-8 py-3 rounded-full shadow-sm border border-green-300">
               इस महीने की राशि: ₹ {totalDonations}
             </span>
           </div>
@@ -151,27 +151,39 @@ const DonationsTable = () => {
         {/* Donations Table */}
         {tableData.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white rounded-xl overflow-hidden shadow-lg">
-              <thead className="bg-orange-100 text-orange-800">
+            <table className="min-w-full bg-white rounded-xl border border-[#f0d28a] overflow-hidden shadow-sm">
+              <thead className="bg-[#fff4d3] text-[#6b3c00] text-[17px] tracking-wide">
                 <tr>
-                  <th className="py-3 px-6 text-left border border-gray-300">क्रम</th>
-                  <th className="py-3 px-6 text-left border border-gray-300">सेवक का नाम</th>
-                  <th className="py-3 px-6 text-left border border-gray-300">दान राशि</th>
-                  <th className="py-3 px-6 text-left border border-gray-300">जुर्माना</th>
+                  <th className="py-3 px-3 border border-[#f0d28a] text-left">
+                    क्रम
+                  </th>
+                  <th className="py-3 px-5 border border-[#f0d28a] text-left">
+                    सेवक का नाम
+                  </th>
+                  <th className="py-3 px-3 border border-[#f0d28a] text-left">
+                    दान राशि
+                  </th>
+                  <th className="py-3 px-3 border border-[#f0d28a] text-left">
+                    जुर्माना
+                  </th>
                 </tr>
               </thead>
-              <tbody className="text-gray-700">
+              <tbody className="text-[#4b3200] font-medium">
                 {tableData.map((row) => (
                   <tr
                     key={row.roll_no}
-                    className="hover:bg-gray-50 transition-all duration-200"
+                    className="hover:bg-[#fff8e7] transition-all duration-200"
                   >
-                    <td className="py-2 px-2 border border-gray-200">{row.roll_no}</td>
-                    <td className="py-2 px-2 border border-gray-200">{row.name}</td>
-                    <td className="py-2 px-2 border border-gray-200 font-semibold text-green-700">
+                    <td className="py-2 px-3 border border-[#f5e2b0]">
+                      {row.roll_no}
+                    </td>
+                    <td className="py-2 px-5 border border-[#f5e2b0]">
+                      {row.name}
+                    </td>
+                    <td className="py-2 px-3 border border-[#f5e2b0] text-green-800 font-semibold">
                       ₹ {row.amount}
                     </td>
-                    <td className="py-2 px-2 border border-gray-200 font-semibold text-red-600">
+                    <td className="py-2 px-3 border border-[#f5e2b0] text-red-600 font-semibold">
                       ₹ {row.fine}
                     </td>
                   </tr>
@@ -180,7 +192,7 @@ const DonationsTable = () => {
             </table>
           </div>
         ) : (
-          <p className="text-center text-[#b58700] mt-10 italic">
+          <p className="text-center text-[#a87400] mt-12 italic text-lg">
             अभी कोई दान जानकारी उपलब्ध नहीं है।
           </p>
         )}
