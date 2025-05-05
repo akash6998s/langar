@@ -40,11 +40,13 @@ const SuperAdmin = () => {
   });
 
   const [donationData, setDonationData] = useState({
-    amount: "",
     rollNo: "",
+    amount: "",
     month: "",
     year: "",
+    type: "", // ✅ initialize type
   });
+  
 
   const [activeSection, setActiveSection] = useState("attendance");
   const [showRollNumberPopup, setShowRollNumberPopup] = useState(false);
@@ -62,9 +64,7 @@ const SuperAdmin = () => {
   useEffect(() => {
     const fetchRollNumbers = async () => {
       try {
-        const response = await axios.get(
-          "https://langar-db-csvv.onrender.com/empty-rollno"
-        );
+        const response = await axios.get("http://localhost:5000/empty-rollno");
         setRollNumbers(response.data);
       } catch (error) {
         console.error("Error fetching roll numbers:", error);
@@ -103,16 +103,13 @@ const SuperAdmin = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(
-        "https://langar-db-csvv.onrender.com/add-member",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(addMemberData),
-        }
-      );
+      const response = await fetch("http://localhost:5000/add-member", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(addMemberData),
+      });
 
       const data = await response.json();
 
@@ -141,9 +138,7 @@ const SuperAdmin = () => {
   useEffect(() => {
     const fetchRollNumbers = async () => {
       try {
-        const res = await fetch(
-          "https://langar-db-csvv.onrender.com/member-full-details"
-        );
+        const res = await fetch("http://localhost:5000/member-full-details");
         const data = await res.json();
         setAvailableRollNumbers(data.map((m) => m.roll_no));
       } catch (err) {
@@ -226,15 +221,12 @@ const SuperAdmin = () => {
     }
 
     try {
-      const res = await axios.post(
-        "https://langar-db-csvv.onrender.com/update-attendance",
-        {
-          attendance: filtered,
-          month,
-          year: Number(year),
-          day: Number(day),
-        }
-      );
+      const res = await axios.post("http://localhost:5000/update-attendance", {
+        attendance: filtered,
+        month,
+        year: Number(year),
+        day: Number(day),
+      });
       alert(res.data.message);
       setAttendanceData((prev) => ({ ...prev, attendance: {} }));
     } catch (err) {
@@ -249,7 +241,7 @@ const SuperAdmin = () => {
     if (filtered.length === 0) return alert("No roll numbers selected.");
     try {
       const res = await axios.post(
-        "https://langar-db-csvv.onrender.com/delete-attendance", // Ensure backend route exists
+        "http://localhost:5000/delete-attendance", // Ensure backend route exists
         { attendance: filtered, month, year: Number(year), day: Number(day) }
       );
       alert(res.data.message);
@@ -267,15 +259,12 @@ const SuperAdmin = () => {
     if (!amount || !description.trim())
       return alert("Amount and Description required.");
     try {
-      const res = await axios.post(
-        "https://langar-db-csvv.onrender.com/add-expense",
-        {
-          amount: Number(amount),
-          description: description.trim(),
-          month,
-          year: Number(year),
-        }
-      );
+      const res = await axios.post("http://localhost:5000/add-expense", {
+        amount: Number(amount),
+        description: description.trim(),
+        month,
+        year: Number(year),
+      });
       alert(res.data.message);
       setExpenseData({ ...expenseData, amount: "", description: "" });
     } catch (err) {
@@ -291,12 +280,9 @@ const SuperAdmin = () => {
     }
 
     try {
-      const res = await axios.post(
-        "https://langar-db-csvv.onrender.com/delete-member",
-        {
-          rollNo: parseInt(rollNo), // ensure it's sent as a number
-        }
-      );
+      const res = await axios.post("http://localhost:5000/delete-member", {
+        rollNo: parseInt(rollNo), // ensure it's sent as a number
+      });
 
       alert(res.data.message);
       setRemoveMember({ rollNo: "" });
@@ -307,26 +293,25 @@ const SuperAdmin = () => {
   };
 
   const addDonation = async () => {
-    const { amount, rollNo, month, year } = donationData;
-    if (!rollNo || !amount || !month || !year)
+    const { amount, rollNo, month, year, type } = donationData;
+    if (!rollNo || !amount || !month || !year || !type)
       return alert("All fields are required.");
     try {
-      const res = await axios.post(
-        "https://langar-db-csvv.onrender.com/update-donations",
-        {
-          rollNo,
-          amount: Number(amount),
-          month,
-          year: Number(year),
-        }
-      );
+      const res = await axios.post("http://localhost:5000/update-donations", {
+        rollNo,
+        amount: Number(amount),
+        month,
+        year: Number(year),
+        type, // ✅ Include type here
+      });
       alert(res.data.message);
-      setDonationData({ ...donationData, amount: "", rollNo: "" });
+      setDonationData({ ...donationData, amount: "", rollNo: "", type: "" });
     } catch (err) {
       console.error("Error adding donation:", err);
       alert("Failed to add donation.");
     }
   };
+  
 
   const renderSelectFields = () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -647,68 +632,101 @@ const SuperAdmin = () => {
 
       {/* Donation Section */}
       {activeSection === "donation" && (
-        <div className="bg-gray-50 p-6 rounded-xl shadow space-y-5">
-          <h2 className="text-2xl font-semibold text-blue-700">Add Donation</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <select
-              className="border px-3 py-2 rounded bg-white shadow-sm"
-              value={donationData.year}
-              onChange={(e) =>
-                setDonationData({ ...donationData, year: e.target.value })
-              }
-            >
-              {[...Array(10)].map((_, i) => {
-                const y = new Date().getFullYear() - 5 + i;
-                return <option key={y}>{y}</option>;
-              })}
-            </select>
-
-            <select
-              className="border px-3 py-2 rounded bg-white shadow-sm"
-              value={donationData.month}
-              onChange={(e) =>
-                setDonationData({ ...donationData, month: e.target.value })
-              }
-            >
-              {monthNames.map((month) => (
-                <option key={month}>{month}</option>
-              ))}
-            </select>
-          </div>
-
-          <select
-            className="w-full border px-3 py-2 rounded bg-white shadow-sm"
-            value={donationData.rollNo}
-            onChange={(e) =>
-              setDonationData({ ...donationData, rollNo: e.target.value })
-            }
-          >
-            <option value="">Select Roll Number</option>
-            {availableRollNumbers.map((rollNo) => (
-              <option key={rollNo} value={rollNo}>
-                {rollNo}
-              </option>
-            ))}
-          </select>
-
-          <input
-            type="number"
-            placeholder="Enter Amount"
-            className="border px-3 py-2 rounded w-full bg-white shadow-sm"
-            value={donationData.amount}
-            onChange={(e) =>
-              setDonationData({ ...donationData, amount: e.target.value })
-            }
-          />
-
-          <button
-            onClick={addDonation}
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition"
-          >
-            Add Donation
-          </button>
-        </div>
+       <div className="bg-gray-50 p-6 rounded-xl shadow space-y-5">
+       <h2 className="text-2xl font-semibold text-blue-700">Add Donation</h2>
+     
+       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+         <select
+           className="border px-3 py-2 rounded bg-white shadow-sm"
+           value={donationData.year}
+           onChange={(e) =>
+             setDonationData({ ...donationData, year: e.target.value })
+           }
+         >
+           {[...Array(10)].map((_, i) => {
+             const y = new Date().getFullYear() - 5 + i;
+             return <option key={y}>{y}</option>;
+           })}
+         </select>
+     
+         <select
+           className="border px-3 py-2 rounded bg-white shadow-sm"
+           value={donationData.month}
+           onChange={(e) =>
+             setDonationData({ ...donationData, month: e.target.value })
+           }
+         >
+           {monthNames.map((month) => (
+             <option key={month}>{month}</option>
+           ))}
+         </select>
+       </div>
+     
+       <select
+         className="w-full border px-3 py-2 rounded bg-white shadow-sm"
+         value={donationData.rollNo}
+         onChange={(e) =>
+           setDonationData({ ...donationData, rollNo: e.target.value })
+         }
+       >
+         <option value="">Select Roll Number</option>
+         {availableRollNumbers.map((rollNo) => (
+           <option key={rollNo} value={rollNo}>
+             {rollNo}
+           </option>
+         ))}
+       </select>
+     
+       <input
+         type="number"
+         placeholder="Enter Amount"
+         className="border px-3 py-2 rounded w-full bg-white shadow-sm"
+         value={donationData.amount}
+         onChange={(e) =>
+           setDonationData({ ...donationData, amount: e.target.value })
+         }
+       />
+     
+       <div className="flex items-center space-x-6">
+         <div className="flex items-center space-x-2">
+           <input
+             type="radio"
+             id="donation"
+             name="type"
+             checked={donationData.type === "donation"}
+             onChange={() => setDonationData({ ...donationData, type: "donation" })}
+             className="h-6 w-6 text-blue-600 border-gray-300 rounded-full focus:ring-blue-500 transition duration-200"
+           />
+           <label htmlFor="donation" className="text-sm text-gray-700">
+             Donation
+           </label>
+         </div>
+         <div className="flex items-center space-x-2">
+           <input
+             type="radio"
+             id="fine"
+             name="type"
+             checked={donationData.type === "fine"}
+             onChange={() => setDonationData({ ...donationData, type: "fine" })}
+             className="h-6 w-6 text-red-600 border-gray-300 rounded-full focus:ring-red-500 transition duration-200"
+           />
+           <label htmlFor="fine" className="text-sm text-gray-700">
+             Fine
+           </label>
+         </div>
+       </div>
+     
+    
+     
+       <button
+         onClick={addDonation}
+         className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition"
+         disabled={!donationData.type} // Disable button if no type is selected
+       >
+         Add Donation
+       </button>
+     </div>
+     
       )}
     </div>
   );

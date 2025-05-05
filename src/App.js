@@ -19,7 +19,7 @@ function App() {
 
 function AppContent() {
   return (
-    <>
+    <div className="background-wrapper">
       <Routes>
         {/* Define Routes */}
         <Route path="/" element={<Dashboard />} />
@@ -27,7 +27,7 @@ function AppContent() {
         <Route path="/superadmin" element={<SuperAdmin />} />
         <Route path="/superadminlogin" element={<SuperAdminLogin />} />
       </Routes>
-    </>
+      </div>
   );
 }
 
