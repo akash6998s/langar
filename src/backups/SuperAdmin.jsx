@@ -63,7 +63,7 @@ const SuperAdmin = () => {
     const fetchRollNumbers = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/empty-rollno"
+          "https://langar-db-csvv.onrender.com/empty-rollno"
         );
         setRollNumbers(response.data);
       } catch (error) {
@@ -104,7 +104,7 @@ const SuperAdmin = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/add-member",
+        "https://langar-db-csvv.onrender.com/add-member",
         {
           method: "POST",
           headers: {
@@ -142,7 +142,7 @@ const SuperAdmin = () => {
     const fetchRollNumbers = async () => {
       try {
         const res = await fetch(
-          "http://localhost:5000/member-full-details"
+          "https://langar-db-csvv.onrender.com/member-full-details"
         );
         const data = await res.json();
         setAvailableRollNumbers(data.map((m) => m.roll_no));
@@ -216,7 +216,7 @@ const SuperAdmin = () => {
     if (filtered.length === 0) return alert("No roll numbers selected.");
     try {
       const res = await axios.post(
-        "http://localhost:5000/update-attendance",
+        "https://langar-db-csvv.onrender.com/update-attendance",
         {
           attendance: filtered,
           month,
@@ -238,7 +238,7 @@ const SuperAdmin = () => {
     if (filtered.length === 0) return alert("No roll numbers selected.");
     try {
       const res = await axios.post(
-        "http://localhost:5000/delete-attendance", // Ensure backend route exists
+        "https://langar-db-csvv.onrender.com/delete-attendance", // Ensure backend route exists
         { attendance: filtered, month, year: Number(year), day: Number(day) }
       );
       alert(res.data.message);
@@ -257,7 +257,7 @@ const SuperAdmin = () => {
       return alert("Amount and Description required.");
     try {
       const res = await axios.post(
-        "http://localhost:5000/add-expense",
+        "https://langar-db-csvv.onrender.com/add-expense",
         {
           amount: Number(amount),
           description: description.trim(),
@@ -281,7 +281,7 @@ const SuperAdmin = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/delete-member",
+        "https://langar-db-csvv.onrender.com/delete-member",
         {
           rollNo: parseInt(rollNo), // ensure it's sent as a number
         }
@@ -301,7 +301,7 @@ const SuperAdmin = () => {
       return alert("All fields are required.");
     try {
       const res = await axios.post(
-        "http://localhost:5000/update-donations",
+        "https://langar-db-csvv.onrender.com/update-donations",
         {
           rollNo,
           amount: Number(amount),
