@@ -47,40 +47,18 @@ const SuperAdmin = () => {
     type: "", // ✅ initialize type
   });
 
-  const [activeSection, setActiveSection] = useState("attendance");
-  const [showRollNumberPopup, setShowRollNumberPopup] = useState(false);
-  const [availableRollNumbers, setAvailableRollNumbers] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const [modalMessage, setModalMessage] = useState("");
-  const [showModal, setShowModal] = useState(false);
-
-  const sections = [
-    { key: "attendance", label: "Add Attendance" },
-    { key: "deleteAttendance", label: "Remove Attendance" },
-    { key: "expense", label: "Add Expense" },
-    { key: "donation", label: "Add Donation" },
-    { key: "addMember", label: "Add Member" },
-    { key: "deleteMember", label: "Remove Member" },
-  ];
-  const [rollNumbers, setRollNumbers] = useState([]);
-  useEffect(() => {
-    const fetchRollNumbers = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get("https://langar-db-csvv.onrender.com/empty-rollno");
-        setRollNumbers(response.data);
-      } catch (error) {
-        console.error("Error fetching main data:", error);
-      } finally {
-        setLoading(false); // Data loading complete
-      }
-    };
-
-    fetchRollNumbers();
-  }, []);
-
   const [addMemberData, setAddMemberData] = useState({
+    roll_no: "",
+    name: "",
+    last_name: "",
+    phone_no: "",
+    address: "",
+    isAdmin: false,
+    img: "", // <-- new key for filename
+  });
+
+  // State for editing member
+  const [editMemberData, setEditMemberData] = useState({
     roll_no: "",
     name: "",
     last_name: "",
@@ -89,60 +67,61 @@ const SuperAdmin = () => {
     isAdmin: false,
   });
 
-  // Handle form input changes
-  const handleMemberData = (e) => {
-    const { name, value } = e.target;
-    setAddMemberData({
-      ...addMemberData,
-      [name]: value,
-    });
-  };
+  const [activeSection, setActiveSection] = useState("attendance");
+  const [showRollNumberPopup, setShowRollNumberPopup] = useState(false);
+  const [availableRollNumbers, setAvailableRollNumbers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
 
-  const handleIsAdminCheckbox = () => {
-    setAddMemberData({
-      ...addMemberData,
-      isAdmin: !addMemberData.isAdmin,
-    });
-  };
+  const [modalMessage, setModalMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [members, setMembers] = useState([]);
 
-  const handleAddMember = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const sections = [
+    { key: "attendance", label: "Add Attendance" },
+    { key: "donation", label: "Add Donation" },
+    { key: "expense", label: "Add Expense" },
+    { key: "editMember", label: "Add / Edit Member" },
+    { key: "deleteMember", label: "Remove Member" },
+    { key: "deleteAttendance", label: "Remove Attendance" },
+  ];
 
-    try {
-      const response = await fetch("https://langar-db-csvv.onrender.com/add-member", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(addMemberData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setModalMessage(data.message || "Failed to add member");
-        setShowModal(true);
-        throw new Error(data.message || "Failed to add member");
+  // Populate edit form when roll number is selected
+  useEffect(() => {
+    if (editMemberData.roll_no) {
+      const selected = members.find(
+        (member) => member.roll_no === editMemberData.roll_no
+      );
+      if (selected) {
+        setEditMemberData({
+          roll_no: selected.roll_no,
+          name: selected.name,
+          last_name: selected.last_name,
+          phone_no: selected.phone_no,
+          address: selected.address,
+          isAdmin: selected.isAdmin || false,
+        });
       }
-
-      setModalMessage("Member added successfully!");
-      setShowModal(true);
-
-      setAddMemberData({
-        roll_no: "",
-        name: "",
-        last_name: "",
-        phone_no: "",
-        address: "",
-        isAdmin: false,
-      });
-    } catch (error) {
-      console.error("Error adding member:", error);
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [editMemberData.roll_no, members]);
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const res = await fetch("https://langar-db-csvv.onrender.com/member-full-details");
+        const data = await res.json();
+        if (data && Array.isArray(data)) {
+          setMembers(data);
+        } else {
+          console.error("Data is not an array or invalid structure.");
+        }
+      } catch (err) {
+        console.error("Error fetching members:", err);
+      }
+    };
+
+    fetchMembers();
+  }, []);
 
   useEffect(() => {
     const fetchRollNumbers = async () => {
@@ -206,6 +185,101 @@ const SuperAdmin = () => {
 
   const handleMonthYearChange = (type, value) => {
     setAttendanceData((prev) => ({ ...prev, [type]: value, day: "1" }));
+  };
+  const handleRollNoChange = (e) => {
+    const selectedRollNo = e.target.value;
+    setEditMemberData({
+      ...editMemberData,
+      roll_no: selectedRollNo,
+    });
+
+    // Find the selected member by roll_no and update the form fields
+    const selectedMember = members.find(
+      (member) => member.roll_no === parseInt(selectedRollNo)
+    );
+
+    if (selectedMember) {
+      setEditMemberData({
+        roll_no: selectedMember.roll_no,
+        name: selectedMember.name,
+        last_name: selectedMember.last_name,
+        phone_no: selectedMember.phone_no,
+        address: selectedMember.address,
+        isAdmin: selectedMember.isAdmin,
+      });
+    }
+  };
+
+  // Handle input change for form fields
+  const handleEditMemberData = (e) => {
+    const { name, value } = e.target;
+    setEditMemberData({
+      ...editMemberData,
+      [name]: value,
+    });
+  };
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Handle the file upload logic (e.g., uploading the file to your server or saving it locally)
+      setEditMemberData({
+        ...editMemberData,
+        image: file, // You can store the file or its URL
+      });
+    }
+  };
+
+  const handleEditMember = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+
+    // Append form data
+    formData.append("roll_no", editMemberData.roll_no);
+    formData.append("name", editMemberData.name);
+    formData.append("last_name", editMemberData.last_name);
+    formData.append("phone_no", editMemberData.phone_no);
+    formData.append("address", editMemberData.address);
+
+    if (editMemberData.image) {
+      formData.append("image", editMemberData.image);
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await fetch("https://langar-db-csvv.onrender.com/edit-member", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update member");
+      }
+
+      const result = await response.json();
+      setModalMessage(result.message || "Member updated successfully!");
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error updating member:", error);
+      const message =
+        error.response?.data?.error ||
+        "Failed to update member. Please try again.";
+      setModalMessage(message);
+      setShowModal(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUploadedImages = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPreviewImage(URL.createObjectURL(file));
+      // You can also store the file in editMemberData if needed
+      setEditMemberData({ ...editMemberData, image: file });
+    }
   };
 
   const handleRollNoClick = (rollNo) => {
@@ -477,7 +551,15 @@ const SuperAdmin = () => {
   }
 
   return (
-    <div className="p-8 max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl space-y-10">
+    <div className="min-h-screen flex flex-col p-8 max-w-4xl mx-auto bg-white shadow-2xl space-y-10">
+      {/* Back Button */}
+      <button
+        onClick={() => (window.location.href = "/")}
+        className="absolute top-8 left-8 inline-block text-sm text-red-800 hover:text-red-600 font-semibold transition"
+      >
+        <span className="mb-2">← </span>Back to Home
+      </button>
+
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-40">
           <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
@@ -491,18 +573,9 @@ const SuperAdmin = () => {
           </div>
         </div>
       )}
-
-      <button
-        onClick={() => (window.location.href = "/")}
-        className="inline-block text-sm text-red-800 hover:text-red-600 font-semibold transition"
-      >
-        <span className="mb-2">← </span>Back to Home
-      </button>
-
-      <h1 className="text-2xl font-extrabold text-center text-orange-700">
+      <h1 className="text-2xl mt-2 font-extrabold text-center text-orange-700">
         SuperAdmin Dashboard
       </h1>
-
       {/* Section Buttons */}
       <div className="w-full overflow-x-auto">
         <div className="flex gap-4 px-4 py-3 min-w-max">
@@ -522,7 +595,6 @@ const SuperAdmin = () => {
           ))}
         </div>
       </div>
-
       {/* Attendance & Delete Attendance Section */}
       {(activeSection === "attendance" ||
         activeSection === "deleteAttendance") && (
@@ -566,7 +638,6 @@ const SuperAdmin = () => {
           </button>
         </div>
       )}
-
       {/* Expense Section */}
       {activeSection === "expense" && (
         <div className="bg-[#fffaf0] p-6 rounded-2xl shadow-xl space-y-6 border border-[#fde68a]">
@@ -627,80 +698,157 @@ const SuperAdmin = () => {
           </button>
         </div>
       )}
-
       {/* Add Member Section */}
-      {activeSection === "addMember" && (
+      {activeSection === "editMember" && (
         <div className="bg-[#fffaf0] p-6 rounded-2xl shadow-xl space-y-6 border border-[#fde68a]">
-          <h2 className="text-2xl font-semibold text-[#9a3412]">Add Member</h2>
+          <h2 className="text-2xl font-semibold text-[#9a3412]">
+            Add / Edit Member
+          </h2>
 
-          <form onSubmit={handleAddMember} className="space-y-5">
-            {[
-              {
-                label: "Roll No",
-                name: "roll_no",
-                type: "select",
-                options: rollNumbers,
-              },
-              { label: "Name", name: "name" },
-              { label: "Last Name", name: "last_name" },
-              { label: "Phone No", name: "phone_no" },
-              { label: "Address", name: "address" },
-            ].map(({ label, name, type, options }) => (
-              <div key={name}>
-                <label className="block text-sm font-medium text-[#78350f] mb-1">
-                  {label}
-                </label>
-                {type === "select" ? (
-                  <select
-                    name={name}
-                    value={addMemberData[name]}
-                    onChange={handleMemberData}
-                    required={name === "roll_no"}
-                    className="block w-full px-4 py-2 border border-yellow-300 rounded bg-[#fffdf8] shadow-sm text-[#78350f]"
-                  >
-                    <option value="">Select {label}</option>
-                    {options.map((opt) => (
-                      <option key={opt} value={opt}>
-                        {opt}
+          <form onSubmit={handleEditMember} className="space-y-5">
+            {/* Select Roll Number */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-[#78350f] mb-1">
+                Select Roll No
+              </label>
+              <select
+                name="roll_no"
+                value={editMemberData.roll_no}
+                onChange={handleRollNoChange}
+                className="block w-full px-4 py-2 border border-yellow-300 rounded bg-[#fffdf8] shadow-sm text-[#78350f]"
+                required
+              >
+                <option value="">--Select Roll No--</option>
+                {Array.isArray(members) && members.length > 0 ? (
+                  <>
+                    {members.map((member) => (
+                      <option key={member.roll_no} value={member.roll_no}>
+                        {member.roll_no}
                       </option>
                     ))}
-                  </select>
+                    <option value={members.length + 1}>
+                      {members.length + 1}
+                    </option>
+                  </>
                 ) : (
-                  <input
-                    type="text"
-                    name={name}
-                    value={addMemberData[name]}
-                    onChange={handleMemberData}
-                    required={name === "name"}
-                    className="block w-full px-4 py-2 border border-yellow-300 rounded bg-[#fffdf8] shadow-sm text-[#78350f] placeholder-[#b45309]"
-                    placeholder={`Enter ${label}`}
-                  />
+                  <option value="1">Add New Roll No: 1</option>
                 )}
-              </div>
-            ))}
-
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={addMemberData.isAdmin}
-                onChange={handleIsAdminCheckbox}
-                className="accent-[#d97706]"
-              />
-              <label className="text-sm text-[#92400e] font-medium">
-                Is Admin
-              </label>
+              </select>
             </div>
 
+            {/* Input fields */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-[#78350f] mb-1">
+                First Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={editMemberData.name}
+                onChange={handleEditMemberData}
+                className="block w-full px-4 py-2 border border-yellow-300 rounded bg-[#fffdf8] shadow-sm text-[#78350f] placeholder-[#b45309]"
+                required
+                placeholder="Enter First Name"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-[#78350f] mb-1">
+                Last Name
+              </label>
+              <input
+                type="text"
+                name="last_name"
+                value={editMemberData.last_name}
+                onChange={handleEditMemberData}
+                className="block w-full px-4 py-2 border border-yellow-300 rounded bg-[#fffdf8] shadow-sm text-[#78350f] placeholder-[#b45309]"
+                placeholder="Enter Last Name"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-[#78350f] mb-1">
+                Phone Number
+              </label>
+              <input
+                type="text"
+                name="phone_no"
+                value={editMemberData.phone_no}
+                onChange={handleEditMemberData}
+                className="block w-full px-4 py-2 border border-yellow-300 rounded bg-[#fffdf8] shadow-sm text-[#78350f] placeholder-[#b45309]"
+                required
+                placeholder="Enter Phone Number"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-[#78350f] mb-1">
+                Address
+              </label>
+              <input
+                name="address"
+                value={editMemberData.address}
+                onChange={handleEditMemberData}
+                className="block w-full px-4 py-2 border border-yellow-300 rounded bg-[#fffdf8] shadow-sm text-[#78350f] placeholder-[#b45309]"
+                required
+                placeholder="Enter Address"
+              />
+            </div>
+
+            {/* Upload Image Field */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-[#78350f] mb-1">
+                Upload Image
+              </label>
+              <div className="relative">
+                <input
+                  type="file"
+                  name="image"
+                  id="imageUpload"
+                  onChange={handleUploadedImages}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  accept="image/*"
+                />
+                <div className="flex items-center justify-center px-4 py-2 border border-yellow-300 bg-[#fffdf8] rounded cursor-pointer shadow-sm text-[#78350f] hover:bg-yellow-100 transition">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 mr-2 text-[#92400e]"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16v1a1 1 0 001 1h14a1 1 0 001-1v-1m-4-4l-4-4m0 0l-4 4m4-4v12"
+                    />
+                  </svg>
+                  <span>Choose Image</span>
+                </div>
+              </div>
+
+              {previewImage && (
+                <div className="mt-4">
+                  <img
+                    src={previewImage}
+                    alt="Preview"
+                    className="w-32 h-32 object-cover rounded-lg border border-yellow-300 shadow"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Submit Button */}
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-[#d97706] to-[#92400e] hover:from-[#fbbf24] hover:to-[#78350f] text-white font-semibold py-2 rounded-lg shadow transition"
             >
-              Add Member
+              Update Member
             </button>
           </form>
         </div>
       )}
-
       {/* Delete Member */}
       {activeSection === "deleteMember" && (
         <div className="bg-[#fff8e1] p-6 rounded-2xl shadow-xl space-y-6 border border-[#fcd34d]">
@@ -731,7 +879,6 @@ const SuperAdmin = () => {
           </button>
         </div>
       )}
-
       {/* Donation Section */}
       {activeSection === "donation" && (
         <div className="bg-[#fff7e6] p-6 rounded-2xl shadow-xl space-y-6 border border-[#fcd34d]">

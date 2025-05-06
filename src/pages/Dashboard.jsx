@@ -3,6 +3,7 @@ import AllExpensesTable from "../components/AllExpensesTable";
 import DonationsTable from "../components/DonationsTable";
 import FinanceTable from "../components/FinanceTable";
 import { Link } from "react-router-dom";
+import { Users } from "lucide-react";
 
 const getDaysInMonth = (year, monthName) => {
   const monthIndex = new Date(`${monthName} 1, ${year}`).getMonth();
@@ -25,7 +26,6 @@ export default function AttendanceTable() {
   const [students, setStudents] = useState({});
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("attendance");
-
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -109,13 +109,23 @@ export default function AttendanceTable() {
   return (
     <div className="p-4 sm:p-6 bg-gradient-to-br min-h-screen">
       {/* Super Admin Button */}
-      <div className="w-full flex justify-end px-6 py-4 mb-6">
-      <Link
-  to="/superadminlogin"
-  className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-5 py-2 rounded-lg shadow-md transition inline-block text-center"
->
-  Super Admin
-</Link>
+      <div className="w-full flex justify-end px-6 py-4 mb-6 gap-x-4">
+        {/* Admin Button */}
+
+        {/* Super Admin Icon Button with Tooltip */}
+        <Link
+          to="/superadminlogin"
+          className="bg-gradient-to-r from-yellow-600 to-orange-500 hover:from-yellow-600 hover:to-orange-500 text-white font-semibold px-4 py-2 rounded-full shadow-lg transition transform hover:scale-105 duration-200 relative group"
+          aria-label="Super Admin"
+        >
+          Super Admin
+        </Link>
+        <Link
+          to="/Sewadaar"
+          className="bg-gradient-to-r from-yellow-600 to-orange-500 hover:from-yellow-600 hover:to-orange-500 text-white font-semibold px-6 py-2 rounded-full shadow-lg transition transform hover:scale-105 duration-200"
+        >
+          <Users className="w-5 h-5" />
+        </Link>
       </div>
 
       {/* Title Section */}
@@ -127,7 +137,7 @@ export default function AttendanceTable() {
       <FinanceTable />
 
       {/* Navigation Tabs for Attendance, Expenses, and Donations */}
-      <div className="flex flex-wrap justify-center gap-4 mb-6">
+      <div className="flex flex-wrap justify-between gap-2 mb-6">
         {["attendance", "expenses", "donations"].map((tab) => (
           <button
             key={tab}
