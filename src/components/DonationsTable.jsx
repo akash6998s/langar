@@ -98,13 +98,18 @@ const DonationsTable = () => {
 
   return (
     <div className="rounded-3xl bg-gradient-to-tr from-[#fffaf0] via-[#fef4dd] to-[#fffaf0] min-h-screen">
-      <div className="max-w-6xl overflow-hidden mx-auto bg-white rounded-3xl shadow-xl p-6 border border-[#e8c98e]">
-        <h2 className="text-4xl font-semibold text-[#5c2d06] text-center mb-10 tracking-wider">
-          मासिक दान सूची
-        </h2>
+      <div className="max-w-6xl overflow-hidden mx-auto bg-white rounded-3xl shadow-xl border border-[#e8c98e]">
+        {/* Total Donations */}
+        {tableData.length > 0 && (
+          <div className="text-center mb-8 w-100">
+            <div className="text-xl font-semibold text-green-900 bg-green-100 px-8 py-3 shadow-sm border border-green-300">
+              इस महीने की राशि: ₹ {totalDonations}
+            </div>
+          </div>
+        )}
 
         {/* Selectors */}
-        <div className="flex flex-wrap justify-center gap-6 mb-10">
+        <div className="flex justify-center gap-3 mb-8 flex-wrap px-4">
           {/* Year Selector */}
           <select
             value={selectedYear}
@@ -113,7 +118,7 @@ const DonationsTable = () => {
               setSelectedMonth("");
               setTableData([]);
             }}
-            className="px-5 py-2 border border-[#e3b04b] rounded-xl w-full sm:w-52 bg-[#fff9ec] text-[#5c2d06] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#e3b04b]"
+            className="px-5 py-3 border border-[#e3b04b] rounded-lg bg-[#fff9ec] text-[#5c2d06] shadow focus:outline-none focus:ring-2 focus:ring-[#e3b04b] w-full sm:w-52 transition-all duration-200"
           >
             <option value="">वर्ष चुनें</option>
             {years.map((year) => (
@@ -128,7 +133,7 @@ const DonationsTable = () => {
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
             disabled={!selectedYear}
-            className="px-5 py-2 border border-[#e3b04b] rounded-xl w-full sm:w-52 bg-[#fff9ec] text-[#5c2d06] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#e3b04b]"
+            className="px-5 py-3 border border-[#e3b04b] rounded-lg bg-[#fff9ec] text-[#5c2d06] shadow focus:outline-none focus:ring-2 focus:ring-[#e3b04b] w-full sm:w-52 transition-all duration-200"
           >
             <option value="">माह चुनें</option>
             {months.map((month) => (
@@ -139,19 +144,10 @@ const DonationsTable = () => {
           </select>
         </div>
 
-        {/* Total Donations */}
-        {tableData.length > 0 && (
-          <div className="text-center mb-8">
-            <span className="text-xl font-semibold text-green-900 bg-green-100 px-8 py-3 rounded-full shadow-sm border border-green-300">
-              इस महीने की राशि: ₹ {totalDonations}
-            </span>
-          </div>
-        )}
-
         {/* Donations Table */}
         {tableData.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white rounded-xl border border-[#f0d28a] overflow-hidden shadow-sm">
+            <table className="min-w-full bg-white border border-[#f0d28a] overflow-hidden shadow-sm">
               <thead className="bg-[#fff4d3] text-[#6b3c00] text-[17px] tracking-wide">
                 <tr>
                   <th className="py-3 px-3 border border-[#f0d28a] text-left">

@@ -215,10 +215,10 @@ export default function AttendanceTable() {
             <thead className="bg-orange-100 text-orange-800">
               <tr>
                 <th className="border border-gray-300 px-2 py-2 sticky top-0 left-0 bg-orange-100 z-10">
-                  Roll No
+                क्रम
                 </th>
                 <th className="border border-gray-300 px-2 py-2 sticky top-0 left-0 bg-orange-100 z-10">
-                  Name
+                नाम
                 </th>
                 {daysInMonth.map(({ date, day }) => (
                   <th
