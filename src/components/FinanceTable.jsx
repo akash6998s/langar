@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const FinanceTable = ({setLoading}) => {
+const FinanceTable = ({ setLoading }) => {
   const [summaryData, setSummaryData] = useState({
     totalDonations: 0,
     totalFines: 0,
@@ -11,8 +11,9 @@ const FinanceTable = ({setLoading}) => {
 
   useEffect(() => {
     const fetchAllData = async () => {
-      
-      const summaryRes = await fetch("https://langar-db-csvv.onrender.com/overall-summary");
+      const summaryRes = await fetch(
+        "https://langar-db-csvv.onrender.com/overall-summary"
+      );
       const summary = await summaryRes.json();
       if (summary.success) {
         setSummaryData(summary.data);
@@ -21,7 +22,9 @@ const FinanceTable = ({setLoading}) => {
 
     const fetchAdditionalData = async () => {
       try {
-        const response = await fetch("https://langar-db-csvv.onrender.com/additional");
+        const response = await fetch(
+          "https://langar-db-csvv.onrender.com/additional"
+        );
         const result = await response.json();
         setAdditionalData(result.donatedRemoved || 0); // Ensure a fallback value of 0 if undefined
       } catch (error) {
@@ -36,27 +39,33 @@ const FinanceTable = ({setLoading}) => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-      <div className="p-4 bg-orange-200 rounded-lg shadow-md text-center">
-        <h3 className="text-lg font-semibold text-orange-800">
-          Total Donations
-        </h3>
-        <p className="text-2xl text-green-600">
-          {summaryData.totalDonations + additionalData + summaryData.totalFines}
-        </p>
-      </div>
-      <div className="p-4 bg-orange-200 rounded-lg shadow-md text-center">
-        <h3 className="text-lg font-semibold text-orange-800">
-          Total Expenses
-        </h3>
-        <p className="text-2xl text-red-600">{summaryData.totalExpenses}</p>
-      </div>
-      <div className="p-4 bg-orange-200 rounded-lg shadow-md text-center">
-        <h3 className="text-lg font-semibold text-orange-800">Net Amount</h3>
-        <p className="text-2xl text-blue-600">
-          {summaryData.netAmount + additionalData}
-        </p>
-      </div>
+  {[
+    {
+      title: "Total Donations",
+      value: summaryData.totalDonations + additionalData + summaryData.totalFines,
+      color: "text-green-600",
+    },
+    {
+      title: "Total Expenses",
+      value: summaryData.totalExpenses,
+      color: "text-red-600",
+    },
+    {
+      title: "Net Amount",
+      value: summaryData.netAmount + additionalData,
+      color: "text-blue-600",
+    },
+  ].map((item, idx) => (
+    <div
+      key={idx}
+      className="p-4 bg-orange-200 rounded-lg shadow-md text-center h-full"
+    >
+      <h3 className="text-lg font-semibold text-orange-800">{item.title}</h3>
+      <p className={`text-2xl ${item.color}`}>{item.value}</p>
     </div>
+  ))}
+</div>
+
   );
 };
 
