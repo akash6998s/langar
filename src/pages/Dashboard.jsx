@@ -180,8 +180,8 @@ export default function AttendanceTable() {
       {activeTab === "attendance" && (
         <div className="flex justify-center gap-2 mb-6 flex-nowrap overflow-x-auto">
           <select
-            className="px-4 py-2 border border-[#e3b04b] rounded-lg w-40 sm:w-48 bg-[#fff9ec] text-[#6b2400] shadow-sm focus:ring-2 focus:ring-[#e3b04b]"
-            value={selectedYear}
+          className="px-5 py-3 border border-[#e3b04b] rounded-lg bg-[#fff9ec] text-[#5c2d06] shadow focus:outline-none focus:ring-2 focus:ring-[#e3b04b] w-full sm:w-52 transition-all duration-200"
+          value={selectedYear}
             onChange={handleYearChange}
           >
             {Object.keys(attendanceData).map((year) => (
@@ -192,8 +192,8 @@ export default function AttendanceTable() {
           </select>
 
           <select
-            className="px-4 py-2 border border-[#e3b04b] rounded-lg w-40 sm:w-48 bg-[#fff9ec] text-[#6b2400] shadow-sm focus:ring-2 focus:ring-[#e3b04b]"
-            value={selectedMonth}
+          className="px-5 py-3 border border-[#e3b04b] rounded-lg bg-[#fff9ec] text-[#5c2d06] shadow focus:outline-none focus:ring-2 focus:ring-[#e3b04b] w-full sm:w-52 transition-all duration-200"
+          value={selectedMonth}
             onChange={handleMonthChange}
             disabled={!selectedYear}
           >
