@@ -3,7 +3,7 @@ import AllExpensesTable from "../components/AllExpensesTable";
 import DonationsTable from "../components/DonationsTable";
 import FinanceTable from "../components/FinanceTable";
 import { Link } from "react-router-dom";
-import { Users } from "lucide-react";
+import { Users, ChevronDown } from "lucide-react";
 
 const getDaysInMonth = (year, monthName) => {
   const monthIndex = new Date(`${monthName} 1, ${year}`).getMonth();
@@ -26,6 +26,7 @@ export default function AttendanceTable() {
   const [students, setStudents] = useState({});
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("attendance");
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -33,7 +34,7 @@ export default function AttendanceTable() {
         setLoading(true); // Indicate data loading has started
 
         // Fetch attendance data
-        const attendanceRes = await fetch("https://langar-db-csvv.onrender.com/attendance");
+        const attendanceRes = await fetch("http://localhost:5000/attendance");
         const attendance = await attendanceRes.json();
         const result = attendance[0];
         setAttendanceData(result);
@@ -59,7 +60,7 @@ export default function AttendanceTable() {
 
         // Fetch member details and format them as roll_no => full name
         const membersRes = await fetch(
-          "https://langar-db-csvv.onrender.com/member-full-details"
+          "http://localhost:5000/member-full-details"
         );
         const members = await membersRes.json();
         const formatted = {};
@@ -109,29 +110,45 @@ export default function AttendanceTable() {
   return (
     <div className="p-4 sm:p-6 bg-gradient-to-br min-h-screen">
       {/* Super Admin Button */}
-      <div className="w-full flex justify-end px-6 py-4 mb-6 gap-x-4">
-        {/* Admin Button */}
-
-        {/* Super Admin Icon Button with Tooltip */}
-        <Link
-          to="/superadminlogin"
-          className="bg-gradient-to-r from-yellow-600 to-orange-500 hover:from-yellow-600 hover:to-orange-500 text-white font-semibold px-4 py-2 rounded-full shadow-lg transition transform hover:scale-105 duration-200 relative group"
-          aria-label="Super Admin"
-        >
-          Super Admin
-        </Link>
-        <Link
-          to="/Sewadaar"
-          className="bg-gradient-to-r from-yellow-600 to-orange-500 hover:from-yellow-600 hover:to-orange-500 text-white font-semibold px-6 py-2 rounded-full shadow-lg transition transform hover:scale-105 duration-200"
+      <div className="w-full flex justify-end px-6 py-4 mb-6">
+      <div className="relative">
+        {/* Dropdown Toggle Button */}
+        <button
+          onClick={() => setOpen(!open)}
+          className="flex items-center gap-2 bg-gradient-to-r from-yellow-600 to-orange-500 text-white font-semibold px-4 py-2 rounded-full shadow-lg transition hover:scale-105 duration-200"
         >
           <Users className="w-5 h-5" />
-        </Link>
-      </div>
+          <ChevronDown className={`w-4 h-4 transform transition ${open ? "rotate-180" : ""}`} />
+        </button>
 
+        {/* Dropdown Menu */}
+        {open && (
+          <div className="absolute right-0 mt-2 w-44 bg-white border border-orange-200 rounded-lg shadow-lg z-50">
+            <Link
+              to="/Sewadaar"
+              className="block px-4 py-2 text-sm text-orange-700 hover:bg-orange-50 transition"
+              onClick={() => setOpen(false)}
+            >
+              All Sewadaars
+            </Link>
+            <Link
+              to="/superadminlogin"
+              className="block px-4 py-2 text-sm text-orange-700 hover:bg-orange-50 transition"
+              onClick={() => setOpen(false)}
+            >
+              Super Admin
+            </Link>
+            
+          </div>
+        )}
+      </div>
+    </div>
       {/* Title Section */}
-      <h1 className="text-3xl sm:text-3xl text-center font-semibold text-[#5c2d06] mb-8 tracking-wider decoration-[#e3b04b] underline-offset-8">
-        श्री सुदर्शन सेना <br /> भोजन वितरण
-      </h1>
+      <h1 class="text-4xl sm:text-5xl text-center font-bold text-[#5c2d06] mb-10 tracking-widest drop-shadow-md">
+  श्री सुदर्शन सेना <br />
+  <span class="">भोजन वितरण</span>
+</h1>
+
 
       {/* Finance Table */}
       <FinanceTable />
@@ -142,7 +159,8 @@ export default function AttendanceTable() {
     <button
       key={tab}
       onClick={() => setActiveTab(tab)}
-      className={`px-4 py-2 rounded-lg min-w-[7rem] sm:min-w-[11rem] text-center text-sm font-semibold tracking-wide transition duration-300 border
+      className={`px-2
+         py-2 rounded-lg text-center text-sm font-semibold tracking-wide transition duration-300 border
       ${
         activeTab === tab
           ? "bg-orange-500 text-white border-orange-500 shadow-inner"
