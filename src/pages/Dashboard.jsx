@@ -137,22 +137,23 @@ export default function AttendanceTable() {
       <FinanceTable />
 
       {/* Navigation Tabs for Attendance, Expenses, and Donations */}
-      <div className="flex flex-wrap justify-between gap-2 mb-6">
-        {["attendance", "expenses", "donations"].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-lg w-28 sm:w-44 text-center text-sm font-semibold tracking-wide transition duration-300 border
-        ${
-          activeTab === tab
-            ? "bg-orange-500 text-white border-orange-500 shadow-inner"
-            : "bg-white text-orange-600 border-orange-300 hover:bg-orange-50"
-        }`}
-          >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
-          </button>
-        ))}
-      </div>
+      <div className="flex justify-center gap-2 mb-6 overflow-x-auto">
+  {["attendance", "expenses", "donations"].map((tab) => (
+    <button
+      key={tab}
+      onClick={() => setActiveTab(tab)}
+      className={`px-4 py-2 rounded-lg min-w-[7rem] sm:min-w-[11rem] text-center text-sm font-semibold tracking-wide transition duration-300 border
+      ${
+        activeTab === tab
+          ? "bg-orange-500 text-white border-orange-500 shadow-inner"
+          : "bg-white text-orange-600 border-orange-300 hover:bg-orange-50"
+      }`}
+    >
+      {tab.charAt(0).toUpperCase() + tab.slice(1)}
+    </button>
+  ))}
+</div>
+
 
       {/* Attendance Filters (Year and Month Selection) */}
       {activeTab === "attendance" && (
