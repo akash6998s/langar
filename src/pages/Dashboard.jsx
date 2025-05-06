@@ -175,7 +175,7 @@ export default function AttendanceTable() {
 
       {/* Attendance Filters (Year and Month Selection) */}
       {activeTab === "attendance" && (
-        <div className="flex flex-wrap justify-center gap-4 mb-6">
+        <div className="flex flex-wrap justify-center gap-2 mb-6">
           <select
             className="px-4 py-2 border border-[#e3b04b] rounded-lg w-full sm:w-48 bg-[#fff9ec] text-[#6b2400] shadow-sm focus:ring-2 focus:ring-[#e3b04b]"
             value={selectedYear}
