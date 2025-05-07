@@ -112,7 +112,7 @@ export default function AttendanceTable() {
   return (
     <div className="p-4 sm:p-6 bg-gradient-to-br min-h-screen">
       {/* Super Admin Button */}
-      <div className="w-full flex justify-end px-6 py-4 mb-6">
+      <div className="w-full flex justify-end mb-6">
         <div className="relative">
           {/* Dropdown Toggle Button */}
           <button
