@@ -141,19 +141,6 @@ const SuperAdmin = () => {
 
   const navigate = useNavigate(); // Call at the top level
 
-  useEffect(() => {
-    const handleBeforeUnload = (event) => {
-      event.preventDefault();
-      event.returnValue = ""; // Trigger prompt message
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    // Cleanup the event listener when the component unmounts
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
 
   useEffect(() => {
     const superAdminId = sessionStorage.getItem("superAdminId");
