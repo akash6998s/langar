@@ -35,7 +35,7 @@ export default function AttendanceTable() {
 
         // Fetch attendance data
         const attendanceRes = await fetch(
-          "https://langar-db-csvv.onrender.com/attendance"
+          "http://localhost:5000/attendance"
         );
         const attendance = await attendanceRes.json();
         const result = attendance[0];
@@ -62,7 +62,7 @@ export default function AttendanceTable() {
 
         // Fetch member details and format them as roll_no => full name
         const membersRes = await fetch(
-          "https://langar-db-csvv.onrender.com/member-full-details"
+          "http://localhost:5000/member-full-details"
         );
         const members = await membersRes.json();
         const formatted = {};
@@ -149,9 +149,9 @@ export default function AttendanceTable() {
         </div>
       </div>
       {/* Title Section */}
-      <h1 class="text-4xl sm:text-5xl text-center font-bold text-[#5c2d06] mb-10 tracking-widest drop-shadow-md">
+      <h1 className="text-4xl sm:text-5xl text-center font-bold text-[#5c2d06] mb-10 tracking-widest drop-shadow-md">
         श्री सुदर्शन सेना <br />
-        <span class="">भोजन वितरण</span>
+        <span className="">भोजन वितरण</span>
       </h1>
 
       {/* Finance Table */}

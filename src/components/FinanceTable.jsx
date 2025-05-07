@@ -12,7 +12,7 @@ const FinanceTable = ({ setLoading }) => {
   useEffect(() => {
     const fetchAllData = async () => {
       const summaryRes = await fetch(
-        "https://langar-db-csvv.onrender.com/overall-summary"
+        "http://localhost:5000/overall-summary"
       );
       const summary = await summaryRes.json();
       if (summary.success) {
@@ -23,7 +23,7 @@ const FinanceTable = ({ setLoading }) => {
     const fetchAdditionalData = async () => {
       try {
         const response = await fetch(
-          "https://langar-db-csvv.onrender.com/additional"
+          "http://localhost:5000/additional"
         );
         const result = await response.json();
         setAdditionalData(result.donatedRemoved || 0); // Ensure a fallback value of 0 if undefined

@@ -8,7 +8,7 @@ const Sewadaar = () => {
     const fetchAllData = async () => {
       try {
         setLoading(true);
-        const res = await fetch("https://langar-db-csvv.onrender.com/member-full-details");
+        const res = await fetch("http://localhost:5000/member-full-details");
         const members = await res.json();
         const formatted = members.map((s) => ({
           ...s,
@@ -66,7 +66,7 @@ const Sewadaar = () => {
               {/* Profile Frame */}
               <div className="w-28 h-28 rounded-full border-4 border-orange-400 ring ring-yellow-300 shadow-md overflow-hidden mb-4 bg-white">
                 <img
-                  src={`https://langar-db-csvv.onrender.com/uploads/${sewadaar.img}`}
+                  src={`http://localhost:5000/uploads/${sewadaar.img}`}
                   alt={sewadaar.fullName}
                   className="w-full h-full object-cover"
                 />
