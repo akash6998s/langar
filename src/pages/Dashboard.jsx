@@ -168,7 +168,7 @@ export default function AttendanceTable() {
     <button
       key={tab}
       onClick={() => setActiveTab(tab)}
-      className={`px-2 py-2.5 rounded-full text-sm font-semibold border transition-all duration-300 ease-in-out 
+      className={`px-3 py-2.5 rounded text-sm font-semibold border transition-all duration-300 ease-in-out 
         ${
           activeTab === tab
             ? "bg-gradient-to-r from-[#FFB900] to-[#FF8800] text-white shadow-md border-transparent scale-105"
