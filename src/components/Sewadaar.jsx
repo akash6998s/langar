@@ -27,10 +27,13 @@ const Sewadaar = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-yellow-50 via-orange-100 to-white">
-        <div className="text-center">
-          <div className="w-14 h-14 border-4 border-t-yellow-500 border-b-orange-500 border-l-transparent border-r-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-lg text-yellow-800 font-medium">Loading...</p>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-t from-indigo-100 via-orange-200 to-white">
+        <div className="flex flex-col items-center space-y-6">
+          {/* Spinner with a soft color */}
+          <div className="w-16 h-16 border-8 border-solid border-transparent border-t-orange-600 rounded-full animate-spin"></div>
+
+          {/* Spiritual Text with 'Jai Gurudev' */}
+          <div className="text-orange-700 font-semibold text-2xl">Loading</div>
         </div>
       </div>
     );

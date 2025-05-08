@@ -112,16 +112,16 @@ export default function AttendanceTable() {
   return (
     <div className="p-4 sm:p-6 bg-gradient-to-br min-h-screen">
       {/* Super Admin Button */}
-      <div className="w-full flex justify-end mb-6">
+      <div className="w-full flex justify-end mb-6 px-2">
         <div className="relative">
           {/* Dropdown Toggle Button */}
           <button
             onClick={() => setOpen(!open)}
-            className="flex items-center gap-2 bg-gradient-to-r from-yellow-600 to-orange-500 text-white font-semibold px-4 py-2 rounded-full shadow-lg transition hover:scale-105 duration-200"
+            className="flex items-center gap-2 bg-gradient-to-r from-[#d97706] to-[#f59e0b] text-white font-semibold px-5 py-2.5 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
           >
             <Users className="w-5 h-5" />
             <ChevronDown
-              className={`w-4 h-4 transform transition ${
+              className={`w-4 h-4 transform transition-transform duration-300 ${
                 open ? "rotate-180" : ""
               }`}
             />
@@ -129,29 +129,34 @@ export default function AttendanceTable() {
 
           {/* Dropdown Menu */}
           {open && (
-            <div className="absolute right-0 mt-2 w-44 bg-white border border-orange-200 rounded-lg shadow-lg z-50">
+            <div className="absolute right-0 mt-3 w-48 bg-white border border-[#facc15] rounded-xl shadow-lg z-50 overflow-hidden animate-fade-in">
               <Link
                 to="/Sewadaar"
-                className="block px-4 py-2 text-sm text-orange-700 hover:bg-orange-50 transition"
+                className="block px-5 py-3 text-sm text-[#92400e] hover:bg-[#fff7e6] font-medium transition-colors duration-200"
                 onClick={() => setOpen(false)}
               >
-                All Sewadaars
+                👥 All Sewadaars
               </Link>
               <Link
                 to="/superadminlogin"
-                className="block px-4 py-2 text-sm text-orange-700 hover:bg-orange-50 transition"
+                className="block px-5 py-3 text-sm text-[#92400e] hover:bg-[#fff7e6] font-medium transition-colors duration-200"
                 onClick={() => setOpen(false)}
               >
-                Super Admin
+                🔐 Super Admin
               </Link>
             </div>
           )}
         </div>
       </div>
+
       {/* Title Section */}
-      <h1 className="text-4xl sm:text-5xl text-center font-bold text-[#5c2d06] mb-10 tracking-widest drop-shadow-md">
-        श्री सुदर्शन सेना <br />
-        <span className="">भोजन वितरण</span>
+      <h1 className="text-4xl sm:text-5xl text-center font-extrabold text-[#6A4C28] mb-8 sm:mb-12 tracking-wider">
+        <span className="block text-5xl sm:text-6xl text-[#6A4C28] mb-3 leading-snug">
+          श्री सुदर्शन सेना
+        </span>
+        <span className="block text-3xl sm:text-4xl font-semibold text-[#8B5E3C]">
+          भोजन वितरण
+        </span>
       </h1>
 
       {/* Finance Table */}
@@ -163,13 +168,12 @@ export default function AttendanceTable() {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-2
-         py-2 rounded-lg text-center text-sm font-semibold tracking-wide transition duration-300 border
-      ${
-        activeTab === tab
-          ? "bg-orange-500 text-white border-orange-500 shadow-inner"
-          : "bg-white text-orange-600 border-orange-300 hover:bg-orange-50"
-      }`}
+            className={`px-6 py-3 rounded-lg text-center text-sm font-semibold transition duration-300 border
+             ${
+               activeTab === tab
+                 ? "bg-[#FFB900] text-white border-[#FFB900] shadow-lg"
+                 : "bg-white text-[#5F2A8C] border-[#FFB900] hover:bg-[#F5F5F5]"
+             }`}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>
@@ -180,8 +184,8 @@ export default function AttendanceTable() {
       {activeTab === "attendance" && (
         <div className="flex justify-center gap-2 mb-6 flex-nowrap overflow-x-auto">
           <select
-          className="px-5 py-3 border border-[#e3b04b] rounded-lg bg-[#fff9ec] text-[#5c2d06] shadow focus:outline-none focus:ring-2 focus:ring-[#e3b04b] w-full sm:w-52 transition-all duration-200"
-          value={selectedYear}
+            className="px-5 py-3 border border-[#e3b04b] rounded-lg bg-[#fff9ec] text-[#5c2d06] shadow focus:outline-none focus:ring-2 focus:ring-[#e3b04b] w-full sm:w-52 transition-all duration-200"
+            value={selectedYear}
             onChange={handleYearChange}
           >
             {Object.keys(attendanceData).map((year) => (
@@ -192,8 +196,8 @@ export default function AttendanceTable() {
           </select>
 
           <select
-          className="px-5 py-3 border border-[#e3b04b] rounded-lg bg-[#fff9ec] text-[#5c2d06] shadow focus:outline-none focus:ring-2 focus:ring-[#e3b04b] w-full sm:w-52 transition-all duration-200"
-          value={selectedMonth}
+            className="px-5 py-3 border border-[#e3b04b] rounded-lg bg-[#fff9ec] text-[#5c2d06] shadow focus:outline-none focus:ring-2 focus:ring-[#e3b04b] w-full sm:w-52 transition-all duration-200"
+            value={selectedMonth}
             onChange={handleMonthChange}
             disabled={!selectedYear}
           >
@@ -215,10 +219,10 @@ export default function AttendanceTable() {
             <thead className="bg-orange-100 text-orange-800">
               <tr>
                 <th className="border border-gray-300 px-2 py-2 sticky top-0 left-0 bg-orange-100 z-10">
-                क्रम
+                  क्रम
                 </th>
                 <th className="border border-gray-300 px-2 py-2 sticky top-0 left-0 bg-orange-100 z-10">
-                नाम
+                  नाम
                 </th>
                 {daysInMonth.map(({ date, day }) => (
                   <th
