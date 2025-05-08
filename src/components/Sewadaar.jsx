@@ -27,27 +27,25 @@ const Sewadaar = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-t from-indigo-100 via-orange-200 to-white">
+      <div className="flex items-center justify-center min-h-screen bg-[#fffbea]">
         <div className="flex flex-col items-center space-y-6">
-          {/* Spinner with a soft color */}
-          <div className="w-16 h-16 border-8 border-solid border-transparent border-t-orange-600 rounded-full animate-spin"></div>
-
-          {/* Spiritual Text with 'Jai Gurudev' */}
-          <div className="text-orange-700 font-semibold text-2xl">Loading</div>
+          <div className="w-12 h-12 border-4 border-dashed border-[#d97706] rounded-full animate-spin"></div>
+          <div className="text-[#5c4324] font-semibold text-xl">प्रतीक्षा करें...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-100 via-orange-50 to-white px-4 py-8 font-serif">
+    <div className="min-h-screen bg-[#fffbea] px-4 py-8 font-serif">
       <button
         onClick={() => (window.location.href = "/")}
-        className="inline-block text-sm text-red-800 hover:text-red-600 font-semibold transition"
+        className="text-sm text-[#5c4324] hover:underline"
       >
-        <span className="mb-2">← </span>Back to Home
+        ← Back to Home
       </button>
-      <h1 className="text-4xl text-center text-orange-900 font-bold my-8 tracking-wide decoration-yellow-500 underline-offset-8">
+
+      <h1 className="text-4xl text-center text-[#d97706] font-bold my-10 underline decoration-[#5c4324] underline-offset-8">
         सेवादार सूची
       </h1>
 
@@ -55,19 +53,14 @@ const Sewadaar = () => {
         {sewadaars.map((sewadaar) => (
           <div
             key={sewadaar.roll_no}
-            className="bg-white relative rounded-3xl p-6 shadow-xl border border-orange-200 transition-transform hover:scale-[1.02] hover:shadow-2xl overflow-hidden"
+            className="bg-white rounded-3xl p-6 shadow-md border border-[#f1d8b0] hover:shadow-xl transition-transform hover:scale-105 relative"
           >
-            {/* Roll Number Badge */}
-            <div className="absolute top-3 left-3 bg-orange-400 text-white font-bold px-3 py-1 rounded-full shadow-sm z-20">
-              {sewadaar.roll_no}
+            <div className="absolute top-3 left-3 bg-[#d97706] text-white text-xs px-3 py-1 rounded-full shadow">
+              #{sewadaar.roll_no}
             </div>
 
-            {/* Halo Behind Image */}
-            <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 w-24 h-24 rounded-full bg-gradient-to-tr from-yellow-100 via-orange-50 to-white blur-2xl z-0" />
-
-            <div className="flex flex-col items-center z-10 relative">
-              {/* Profile Frame */}
-              <div className="w-28 h-28 rounded-full border-4 border-orange-400 ring ring-yellow-300 shadow-md overflow-hidden mb-4 bg-white">
+            <div className="flex flex-col items-center relative">
+              <div className="w-24 h-24 rounded-full border-4 border-[#d97706] shadow-inner overflow-hidden mb-4 bg-white">
                 <img
                   src={`https://langar-db-csvv.onrender.com/uploads/${sewadaar.img}`}
                   alt={sewadaar.fullName}
@@ -75,30 +68,28 @@ const Sewadaar = () => {
                 />
               </div>
 
-              <h2 className="text-xl text-orange-800 font-bold tracking-wide mb-1">
-                {sewadaar.fullName}
-              </h2>
+              <h2 className="text-lg text-[#5c4324] font-bold mb-1">{sewadaar.fullName}</h2>
 
-              <div className="w-full text-sm text-gray-700 space-y-2 mt-3 px-4">
+              <div className="w-full text-sm text-gray-700 space-y-2 mt-3 px-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-orange-600">📞</span>
+                  <span className="text-[#d97706]">📞</span>
                   <span>{sewadaar.phone_no}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-orange-600">🏠</span>
+                  <span className="text-[#d97706]">🏠</span>
                   <span>{sewadaar.address}</span>
                 </div>
                 {sewadaar.sewa_type && (
                   <div className="flex items-center gap-2">
-                    <span className="text-orange-600">🛐</span>
-                    <span className="text-orange-700 font-medium">
+                    <span className="text-[#d97706]">🛐</span>
+                    <span className="text-[#5c4324] font-medium">
                       सेवा: {sewadaar.sewa_type}
                     </span>
                   </div>
                 )}
                 {sewadaar.email && (
                   <div className="flex items-center gap-2">
-                    <span className="text-orange-600">📧</span>
+                    <span className="text-[#d97706]">📧</span>
                     <span>{sewadaar.email}</span>
                   </div>
                 )}
