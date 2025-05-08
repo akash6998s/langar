@@ -163,12 +163,12 @@ export default function AttendanceTable() {
       <FinanceTable />
 
       {/* Navigation Tabs for Attendance, Expenses, and Donations */}
-      <div className="flex justify-center gap-4 mb-6 flex-wrap">
+      <div className="flex justify-center gap-2 mb-6 flex-wrap">
   {["attendance", "expenses", "donations"].map((tab) => (
     <button
       key={tab}
       onClick={() => setActiveTab(tab)}
-      className={`px-5 py-2.5 rounded-full text-sm font-semibold border transition-all duration-300 ease-in-out 
+      className={`px-2 py-2.5 rounded-full text-sm font-semibold border transition-all duration-300 ease-in-out 
         ${
           activeTab === tab
             ? "bg-gradient-to-r from-[#FFB900] to-[#FF8800] text-white shadow-md border-transparent scale-105"

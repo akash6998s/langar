@@ -45,7 +45,7 @@ const Sewadaar = () => {
         ← Back to Home
       </button>
 
-      <h1 className="text-4xl text-center text-[#d97706] font-bold my-10 underline decoration-[#5c4324] underline-offset-8">
+      <h1 className="text-4xl text-center text-[#d97706] font-bold my-10  decoration-[#5c4324] underline-offset-8">
         सेवादार सूची
       </h1>
 
