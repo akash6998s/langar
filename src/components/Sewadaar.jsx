@@ -1,25 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import credentials from ".././data/admin.json";
 
 const Sewadaar = () => {
   const [sewadaars, setSewadaars] = useState([]);
   const [loading, setLoading] = useState(true);
-
-   const navigate = useNavigate(); // Call at the top level
-    
-      useEffect(() => {
-        const superAdminId = sessionStorage.getItem("superAdminId");
-        const superAdminPassword = sessionStorage.getItem("superAdminPassword");
-    
-        const isAuthorized =
-          superAdminId === credentials.superAdmin_login.id &&
-          superAdminPassword === credentials.superAdmin_login.password;
-    
-        if (!isAuthorized) {
-          navigate("/"); // Redirect if not authorized
-        }
-      }, [navigate]);
+  
 
   useEffect(() => {
     const fetchAllData = async () => {
