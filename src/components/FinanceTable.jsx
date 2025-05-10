@@ -35,7 +35,7 @@ const FinanceTable = ({ setLoading }) => {
 
   const cardData = [
     {
-      title: "Donations",
+      title: "Total Donations",
       value: summaryData.totalDonations + additionalData + summaryData.totalFines,
       bgColor: "bg-gradient-to-r from-[#FFB900] to-[#FF6600]", // Gradient from gold to orange
     },
@@ -52,7 +52,7 @@ const FinanceTable = ({ setLoading }) => {
   ];
 
   return (
-    <div className="mb-6 px-4">
+    <div className="mb-6">
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
       {cardData.map((item, idx) => (
         <div
