@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import credentials from "../data/admin.json";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const SuperAdmin = () => {
   const monthNames = [
@@ -108,7 +109,9 @@ const SuperAdmin = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const res = await fetch("https://langar-db-csvv.onrender.com/member-full-details");
+        const res = await fetch(
+          "https://langar-db-csvv.onrender.com/member-full-details"
+        );
         const data = await res.json();
         if (data && Array.isArray(data)) {
           setMembers(data);
@@ -127,7 +130,9 @@ const SuperAdmin = () => {
     const fetchRollNumbers = async () => {
       try {
         setLoading(true);
-        const res = await fetch("https://langar-db-csvv.onrender.com/member-full-details");
+        const res = await fetch(
+          "https://langar-db-csvv.onrender.com/member-full-details"
+        );
         const data = await res.json();
         setAvailableRollNumbers(data.map((m) => m.roll_no));
       } catch (error) {
@@ -140,7 +145,6 @@ const SuperAdmin = () => {
   }, []);
 
   const navigate = useNavigate(); // Call at the top level
-
 
   useEffect(() => {
     const superAdminId = sessionStorage.getItem("superAdminId");
@@ -236,10 +240,13 @@ const SuperAdmin = () => {
     try {
       setLoading(true);
 
-      const response = await fetch("https://langar-db-csvv.onrender.com/edit-member", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://langar-db-csvv.onrender.com/edit-member",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to update member");
@@ -299,12 +306,15 @@ const SuperAdmin = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post("https://langar-db-csvv.onrender.com/update-attendance", {
-        attendance: filtered,
-        month,
-        year: Number(year),
-        day: Number(day),
-      });
+      const res = await axios.post(
+        "https://langar-db-csvv.onrender.com/update-attendance",
+        {
+          attendance: filtered,
+          month,
+          year: Number(year),
+          day: Number(day),
+        }
+      );
 
       setModalMessage(res.data.message || "Attendance updated successfully!");
       setShowModal(true);
@@ -332,12 +342,15 @@ const SuperAdmin = () => {
     try {
       setLoading(true);
 
-      const res = await axios.post("https://langar-db-csvv.onrender.com/delete-attendance", {
-        attendance: filtered,
-        month,
-        year: Number(year),
-        day: Number(day),
-      });
+      const res = await axios.post(
+        "https://langar-db-csvv.onrender.com/delete-attendance",
+        {
+          attendance: filtered,
+          month,
+          year: Number(year),
+          day: Number(day),
+        }
+      );
 
       setModalMessage(res.data.message || "Attendance deleted successfully!");
       setShowModal(true);
@@ -364,12 +377,15 @@ const SuperAdmin = () => {
     try {
       setLoading(true);
 
-      const res = await axios.post("https://langar-db-csvv.onrender.com/add-expense", {
-        amount: Number(amount),
-        description: description.trim(),
-        month,
-        year: Number(year),
-      });
+      const res = await axios.post(
+        "https://langar-db-csvv.onrender.com/add-expense",
+        {
+          amount: Number(amount),
+          description: description.trim(),
+          month,
+          year: Number(year),
+        }
+      );
 
       setModalMessage(res.data.message || "Expense added successfully!");
       setShowModal(true);
@@ -396,9 +412,12 @@ const SuperAdmin = () => {
     try {
       setLoading(true);
 
-      const res = await axios.post("https://langar-db-csvv.onrender.com/delete-member", {
-        rollNo: parseInt(rollNo),
-      });
+      const res = await axios.post(
+        "https://langar-db-csvv.onrender.com/delete-member",
+        {
+          rollNo: parseInt(rollNo),
+        }
+      );
 
       setModalMessage(res.data.message || "Member deleted successfully!");
       setShowModal(true);
@@ -424,13 +443,16 @@ const SuperAdmin = () => {
     try {
       setLoading(true);
 
-      const res = await axios.post("https://langar-db-csvv.onrender.com/update-donations", {
-        rollNo,
-        amount: Number(amount),
-        month,
-        year: Number(year),
-        type,
-      });
+      const res = await axios.post(
+        "https://langar-db-csvv.onrender.com/update-donations",
+        {
+          rollNo,
+          amount: Number(amount),
+          month,
+          year: Number(year),
+          type,
+        }
+      );
 
       setModalMessage(res.data.message || "Donation added successfully!");
       setShowModal(true);
@@ -539,6 +561,24 @@ const SuperAdmin = () => {
 
   return (
     <div className="min-h-screen flex flex-col p-8 max-w-4xl mx-auto bg-white shadow-2xl space-y-10">
+      <div className="w-full flex justify-end mb-8 px-4">
+  <div className="inline-flex space-x-4 bg-[#FFF7E6] border border-[#f3dcb2] rounded-full px-4 py-2 shadow-sm">
+    <Link
+      to="/expenses"
+      className="px-5 py-2 text-sm font-semibold text-[#92400e] rounded-full hover:bg-[#fdebc4] hover:text-[#7c2d12] transition-all duration-200"
+    >
+      🧾 Expenses
+    </Link>
+    <Link
+      to="/donations"
+      className="px-5 py-2 text-sm font-semibold text-[#92400e] rounded-full hover:bg-[#fdebc4] hover:text-[#7c2d12] transition-all duration-200"
+    >
+      💰 Donations
+    </Link>
+  </div>
+</div>
+
+
       {/* Back Button */}
       <button
         onClick={() => (window.location.href = "/")}

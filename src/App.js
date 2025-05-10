@@ -9,6 +9,8 @@ import Dashboard from "./pages/Dashboard";
 import SuperAdmin from "./pages/SuperAdmin";
 import SuperAdminLogin from "./pages/login/SuperAdminLogin";
 import Sewadaar from "./components/Sewadaar";
+import DonationsTable from "./components/DonationsTable";
+import AllExpensesTable from "./components/AllExpensesTable";
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function AppContent() {
         <Route path="/superadmin" element={<SuperAdmin />} />
         <Route path="/sewadaar" element={<Sewadaar />} />
         <Route path="/superadminlogin" element={<SuperAdminLogin />} />
+        <Route path="/donations" element={<DonationsTable />} />
+        <Route path="/expenses" element={<AllExpensesTable />} />
       </Routes>
       </div>
   );
