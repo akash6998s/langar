@@ -35,7 +35,7 @@ const FinanceTable = ({ setLoading }) => {
 
   const cardData = [
     {
-      title: "Total Donations",
+      title: "Donations",
       value: summaryData.totalDonations + additionalData + summaryData.totalFines,
       bgColor: "bg-gradient-to-r from-[#FFB900] to-[#FF6600]", // Gradient from gold to orange
     },
@@ -52,21 +52,25 @@ const FinanceTable = ({ setLoading }) => {
   ];
 
   return (
-    <div className="mb-4">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        {cardData.map((item, idx) => (
-          <div
-            key={idx}
-            className={`flex flex-col items-center justify-center ${item.bgColor} rounded-lg shadow-2xl p-6 transition-transform duration-500 transform `}
-          >
-            <h3 className="text-xl font-bold text-white mb-4">{item.title}</h3>
-            <p className="text-4xl font-extrabold text-white animate__animated animate__fadeIn animate__delay-1s">
-              {item.value} {/* Adds thousands separators for better readability */}
-            </p>
-          </div>
-        ))}
-      </div>
+    <div className="mb-6 px-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
+      {cardData.map((item, idx) => (
+        <div
+          key={idx}
+          className={`flex flex-col items-center justify-center ${item.bgColor} rounded-2xl shadow-xl p-5 sm:p-6 transform transition duration-300 hover:scale-[1.03] hover:shadow-2xl`}
+        >
+          <h3 className="text-lg sm:text-xl font-semibold text-white mb-2 sm:mb-4 tracking-wide text-center">
+            {item.title}
+          </h3>
+          <p className="text-3xl sm:text-4xl font-bold text-white animate__animated animate__fadeIn animate__delay-1s">
+            {item.value}
+          </p>
+        </div>
+      ))}
     </div>
+  </div>
+  
+
   );
 };
 
