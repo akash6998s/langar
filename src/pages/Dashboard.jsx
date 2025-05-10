@@ -131,13 +131,6 @@ export default function AttendanceTable() {
           {open && (
             <div className="absolute right-0 mt-3 w-48 bg-white border border-[#facc15] rounded-xl shadow-lg z-50 overflow-hidden animate-fade-in">
               <Link
-                to="/Sewadaar"
-                className="block px-5 py-3 text-sm text-[#92400e] hover:bg-[#fff7e6] font-medium transition-colors duration-200"
-                onClick={() => setOpen(false)}
-              >
-                👥 All Sewadaars
-              </Link>
-              <Link
                 to="/superadminlogin"
                 className="block px-5 py-3 text-sm text-[#92400e] hover:bg-[#fff7e6] font-medium transition-colors duration-200"
                 onClick={() => setOpen(false)}
@@ -179,6 +172,16 @@ export default function AttendanceTable() {
           </button>
         ))}
       </div> */}
+
+      <button className="w-full sm:w-48 mb-4 h-12 bg-gradient-to-r from-[#FDE68A] to-[#FBBF24] text-white font-semibold rounded-lg shadow-md hover:bg-[#FBBF24] hover:scale-105 transition-all duration-300">
+        <Link
+          to="/Sewadaar"
+          className="flex items-center justify-center gap-2 w-full h-full text-sm text-[#7C3AED] hover:text-white transition-colors duration-200"
+          onClick={() => setOpen(false)}
+        >
+          <span>👥</span> All Sewadaars
+        </Link>
+      </button>
 
       {/* Attendance Filters (Year and Month Selection) */}
       {activeTab === "attendance" && (

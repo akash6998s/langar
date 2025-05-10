@@ -1,14 +1,33 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import credentials from ".././data/admin.json";
 
 const Sewadaar = () => {
   const [sewadaars, setSewadaars] = useState([]);
   const [loading, setLoading] = useState(true);
 
+   const navigate = useNavigate(); // Call at the top level
+    
+      useEffect(() => {
+        const superAdminId = sessionStorage.getItem("superAdminId");
+        const superAdminPassword = sessionStorage.getItem("superAdminPassword");
+    
+        const isAuthorized =
+          superAdminId === credentials.superAdmin_login.id &&
+          superAdminPassword === credentials.superAdmin_login.password;
+    
+        if (!isAuthorized) {
+          navigate("/"); // Redirect if not authorized
+        }
+      }, [navigate]);
+
   useEffect(() => {
     const fetchAllData = async () => {
       try {
         setLoading(true);
-        const res = await fetch("https://langar-db-csvv.onrender.com/member-full-details");
+        const res = await fetch(
+          "https://langar-db-csvv.onrender.com/member-full-details"
+        );
         const members = await res.json();
         const formatted = members.map((s) => ({
           ...s,
@@ -30,7 +49,9 @@ const Sewadaar = () => {
       <div className="flex items-center justify-center min-h-screen bg-[#fffbea]">
         <div className="flex flex-col items-center space-y-6">
           <div className="w-12 h-12 border-4 border-dashed border-[#d97706] rounded-full animate-spin"></div>
-          <div className="text-[#5c4324] font-semibold text-xl">प्रतीक्षा करें...</div>
+          <div className="text-[#5c4324] font-semibold text-xl">
+            प्रतीक्षा करें...
+          </div>
         </div>
       </div>
     );
@@ -40,9 +61,24 @@ const Sewadaar = () => {
     <div className="min-h-screen bg-[#fffbea] px-4 py-8 font-serif">
       <button
         onClick={() => (window.location.href = "/")}
-        className="text-sm text-[#5c4324] hover:underline"
+        className="p-2 rounded-full hover:bg-red-100 text-red-800 hover:text-red-600 transition"
+        title="Back to Home"
       >
-        ← Back to Home
+        {/* Heroicon: Arrow Left */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          />
+        </svg>
       </button>
 
       <h1 className="text-4xl text-center text-[#d97706] font-bold my-10  decoration-[#5c4324] underline-offset-8">
@@ -68,7 +104,9 @@ const Sewadaar = () => {
                 />
               </div>
 
-              <h2 className="text-lg text-[#5c4324] font-bold mb-1">{sewadaar.fullName}</h2>
+              <h2 className="text-lg text-[#5c4324] font-bold mb-1">
+                {sewadaar.fullName}
+              </h2>
 
               <div className="w-full text-sm text-gray-700 space-y-2 mt-3 px-2">
                 <div className="flex items-center gap-2">

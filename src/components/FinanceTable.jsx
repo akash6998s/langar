@@ -39,11 +39,11 @@ const FinanceTable = ({ setLoading }) => {
       value: summaryData.totalDonations + additionalData + summaryData.totalFines,
       bgColor: "bg-gradient-to-r from-[#FFB900] to-[#FF6600]", // Gradient from gold to orange
     },
-    {
-      title: "Total Expenses",
-      value: summaryData.totalExpenses,
-      bgColor: "bg-gradient-to-r from-[#9B2C2C] to-[#E53E3E]", // Gradient from rich red to dark red
-    },
+    // {
+    //   title: "Total Expenses",
+    //   value: summaryData.totalExpenses,
+    //   bgColor: "bg-gradient-to-r from-[#9B2C2C] to-[#E53E3E]", // Gradient from rich red to dark red
+    // },
     {
       title: "Net Amount",
       value: summaryData.netAmount + additionalData,
@@ -52,7 +52,7 @@ const FinanceTable = ({ setLoading }) => {
   ];
 
   return (
-    <div className="mb-8">
+    <div className="mb-4">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {cardData.map((item, idx) => (
           <div

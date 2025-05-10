@@ -116,6 +116,27 @@ const DonationsTable = () => {
 
   return (
     <div className="px-4 py-8 bg-[#fff7eb] min-h-screen">
+      <button
+        onClick={() => (window.location.href = "/")}
+        className="p-2 rounded-full hover:bg-red-100 text-red-800 hover:text-red-600 transition"
+        title="Back to Home"
+      >
+        {/* Heroicon: Arrow Left */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          />
+        </svg>
+      </button>
     {/* Header */}
     <h2 className="text-3xl font-bold text-center text-[#4b1c0d] mb-6 underline underline-offset-8 decoration-[#e3b04b]">
       सेवक दान विवरण

@@ -53,6 +53,27 @@ const AllExpensesTable = () => {
 
   return (
     <div className="py-12 px-4 sm:px-8 max-w-6xl mx-auto bg-gradient-to-br from-[#FFF7EA] to-[#FFF2D0] rounded-3xl shadow-2xl border border-[#f7d89c]">
+      <button
+        onClick={() => (window.location.href = "/")}
+        className="p-2 rounded-full hover:bg-red-100 text-red-800 hover:text-red-600 transition"
+        title="Back to Home"
+      >
+        {/* Heroicon: Arrow Left */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          />
+        </svg>
+      </button>
       {/* Section Title */}
       <h2 className="text-4xl font-extrabold text-center text-[#b45309] mb-12 tracking-wide drop-shadow-md">
         📜 सभी खर्चों की जानकारी

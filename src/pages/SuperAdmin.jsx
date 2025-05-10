@@ -73,6 +73,7 @@ const SuperAdmin = () => {
   const [availableRollNumbers, setAvailableRollNumbers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const [modalMessage, setModalMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -561,31 +562,74 @@ const SuperAdmin = () => {
 
   return (
     <div className="min-h-screen flex flex-col p-8 max-w-4xl mx-auto bg-white shadow-2xl space-y-10">
-      <div className="w-full flex justify-end mb-8 px-4">
-  <div className="inline-flex space-x-4 bg-[#FFF7E6] border border-[#f3dcb2] rounded-full px-4 py-2 shadow-sm">
-    <Link
-      to="/expenses"
-      className="px-5 py-2 text-sm font-semibold text-[#92400e] rounded-full hover:bg-[#fdebc4] hover:text-[#7c2d12] transition-all duration-200"
-    >
-      🧾 Expenses
-    </Link>
-    <Link
-      to="/donations"
-      className="px-5 py-2 text-sm font-semibold text-[#92400e] rounded-full hover:bg-[#fdebc4] hover:text-[#7c2d12] transition-all duration-200"
-    >
-      💰 Donations
-    </Link>
-  </div>
-</div>
+      <div className="w-full flex justify-between items-center px-4 mt-4 relative z-50">
+        {/* Back Button on Left */}
+        <button
+          onClick={() => (window.location.href = "/")}
+          className="p-2 rounded-full hover:bg-red-100 text-red-800 hover:text-red-600 transition"
+          title="Back to Home"
+        >
+          {/* Heroicon: Arrow Left */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
+        </button>
 
+        {/* Dropdown Menu on Right */}
+        <div className="relative">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="flex items-center gap-2 px-5 py-2 bg-[#FFF7E6] border border-[#f3dcb2] text-[#92400e] font-semibold rounded-full shadow-sm hover:bg-[#fdebc4] transition-all duration-200"
+          >
+          Finance
+            <svg
+              className={`w-4 h-4 transform transition-transform duration-200 ${
+                isOpen ? "rotate-180" : "rotate-0"
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
 
-      {/* Back Button */}
-      <button
-        onClick={() => (window.location.href = "/")}
-        className="absolute top-8 left-8 inline-block text-sm text-red-800 hover:text-red-600 font-semibold transition"
-      >
-        <span className="mb-2">← </span>Back to Home
-      </button>
+          {isOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-orange-200 rounded-lg shadow-lg py-2">
+              <Link
+                to="/expenses"
+                className="block px-5 py-2 text-sm text-[#92400e] hover:bg-[#FFF7E6] hover:text-[#7c2d12] transition"
+                onClick={() => setIsOpen(false)}
+              >
+                🧾 Expenses
+              </Link>
+              <Link
+                to="/donations"
+                className="block px-5 py-2 text-sm text-[#92400e] hover:bg-[#FFF7E6] hover:text-[#7c2d12] transition"
+                onClick={() => setIsOpen(false)}
+              >
+                💰 Donations
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
 
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-40">
