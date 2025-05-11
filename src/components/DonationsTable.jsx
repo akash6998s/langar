@@ -17,24 +17,70 @@ const DonationsTable = () => {
 
 
 
-const handleDownloadPDF = () => {
-  setLoading(true);
-
-  const input = tableRef.current;
-
-  const opt = {
-    margin: 0.5,
-    filename: "donations.pdf",
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+  const handleDownloadPDF = () => {
+    setLoading(true);
+  
+    const originalNode = tableRef.current;
+  
+    // Clone the original node
+    const clone = originalNode.cloneNode(true);
+  
+    // Inline styles for PDF rendering
+    clone.style.width = "100%";
+    clone.style.border = "1px solid #f2dbb5";
+    clone.style.background = "#ffffff";
+    clone.style.fontSize = "14px";
+  
+    // Add inline styles to all table elements
+    clone.querySelectorAll("table, th, td, thead, tbody, tr").forEach((el) => {
+      el.style.border = "1px solid #f2dbb5";
+      el.style.borderCollapse = "collapse";
+      el.style.padding = "8px";
+      el.style.color = "#4b1c0d";
+      el.style.fontFamily = "sans-serif";
+      el.style.backgroundColor = "#fff";
+    });
+  
+    // Add background to header manually
+    clone.querySelectorAll("thead tr").forEach((el) => {
+      el.style.backgroundColor = "#fff1d0";
+      el.style.fontWeight = "bold";
+    });
+  
+    // Add a wrapper in the body to render off-screen
+    const hiddenContainer = document.createElement("div");
+    hiddenContainer.style.position = "fixed";
+    hiddenContainer.style.top = "-10000px";
+    hiddenContainer.appendChild(clone);
+    document.body.appendChild(hiddenContainer);
+  
+    const opt = {
+      margin: 0.5,
+      filename: "donations.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+      },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+    };
+  
+    html2pdf()
+      .set(opt)
+      .from(clone)
+      .save()
+      .then(() => {
+        document.body.removeChild(hiddenContainer);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
   };
-
-  html2pdf().set(opt).from(input).save().finally(() => {
-    setLoading(false);
-  });
-};
+  
 
 
   // const handleDownloadPDF = async () => {
