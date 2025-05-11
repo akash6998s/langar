@@ -25,11 +25,11 @@ function App() {
         hiddenTimeRef.current = Date.now();
         timeoutRef.current = setTimeout(() => {
           window.location.reload();
-        }, 60000); // 5 minutes
+        }, 300000); // 5 minutes
       } else {
         // Page is visible again
         const hiddenDuration = Date.now() - hiddenTimeRef.current;
-        if (hiddenDuration >= 60000) {
+        if (hiddenDuration >= 300000) {
           window.location.reload();
         } else {
           clearTimeout(timeoutRef.current);
