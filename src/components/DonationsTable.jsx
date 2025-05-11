@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { FaDownload } from "react-icons/fa";
+import html2pdf from "html2pdf.js";
 
 const DonationsTable = () => {
   const [donationData, setDonationData] = useState({});
@@ -14,51 +15,93 @@ const DonationsTable = () => {
   const tableRef = useRef();
   const [loading, setLoading] = useState(false);
 
-  const handleDownloadPDF = async () => {
-    setLoading(true); // Start loader
 
-    const input = tableRef.current;
-    const originalHeight = input.style.height;
-    const originalOverflow = input.style.overflow;
 
-    input.style.height = "auto";
-    input.style.overflow = "visible";
+const handleDownloadPDF = () => {
+  setLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+  const input = tableRef.current;
 
-    const canvas = await html2canvas(input, {
-      scale: 2,
-      useCORS: true,
-      scrollY: -window.scrollY,
-    });
-
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-    let heightLeft = pdfHeight;
-    let position = 0;
-
-    pdf.addImage(imgData, "PNG", 0, position, pdfWidth, pdfHeight);
-    heightLeft -= pdf.internal.pageSize.getHeight();
-
-    while (heightLeft > 0) {
-      position = heightLeft - pdfHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, pdfHeight);
-      heightLeft -= pdf.internal.pageSize.getHeight();
-    }
-
-    input.style.height = originalHeight;
-    input.style.overflow = originalOverflow;
-
-    pdf.save("donations.pdf");
-
-    setLoading(false); // End loader
+  const opt = {
+    margin: 0.5,
+    filename: "donations.pdf",
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
   };
+
+  html2pdf().set(opt).from(input).save().finally(() => {
+    setLoading(false);
+  });
+};
+
+
+  // const handleDownloadPDF = async () => {
+  //   setLoading(true);
+  
+  //   const input = tableRef.current;
+  //   const originalHeight = input.style.height;
+  //   const originalOverflow = input.style.overflow;
+  
+  //   input.style.height = "auto";
+  //   input.style.overflow = "visible";
+  
+  //   await new Promise((resolve) => setTimeout(resolve, 500));
+  
+  //   const canvas = await html2canvas(input, {
+  //     scale: 2,
+  //     useCORS: true,
+  //     scrollY: -window.scrollY,
+  //   });
+  
+  //   const imgData = canvas.toDataURL("image/png");
+  //   const pdf = new jsPDF("p", "mm", "a4");
+  
+  //   const pdfWidth = pdf.internal.pageSize.getWidth();
+  //   const pdfHeight = pdf.internal.pageSize.getHeight();
+  
+  //   const imgWidth = canvas.width;
+  //   const imgHeight = canvas.height;
+  
+  //   const ratio = pdfWidth / imgWidth;
+  //   const scaledHeight = imgHeight * ratio;
+  
+  //   let position = 0;
+  //   let pageHeight = pdfHeight * (canvas.height / scaledHeight);
+  
+  //   while (position < canvas.height) {
+  //     const canvasPage = document.createElement("canvas");
+  //     canvasPage.width = canvas.width;
+  //     canvasPage.height = Math.min(pageHeight, canvas.height - position);
+  
+  //     const ctx = canvasPage.getContext("2d");
+  //     ctx.drawImage(
+  //       canvas,
+  //       0,
+  //       position,
+  //       canvas.width,
+  //       canvasPage.height,
+  //       0,
+  //       0,
+  //       canvas.width,
+  //       canvasPage.height
+  //     );
+  
+  //     const pageData = canvasPage.toDataURL("image/png");
+  //     if (position !== 0) pdf.addPage();
+  //     pdf.addImage(pageData, "PNG", 0, 0, pdfWidth, (canvasPage.height * pdfWidth) / canvas.width);
+  
+  //     position += pageHeight;
+  //   }
+  
+  //   input.style.height = originalHeight;
+  //   input.style.overflow = originalOverflow;
+  
+  //   pdf.save("donations.pdf");
+  //   setLoading(false);
+  // };
+  
 
   const monthNames = [
     "January",
@@ -273,7 +316,7 @@ const DonationsTable = () => {
                     <th className="py-3 px-4 border border-[#f2dbb5] text-left">
                       सेवक का नाम
                     </th>
-                    <th className="py-3 px-2 border border-[#f2dbb5] text-left">
+                    <th className="py-3 px-4 border border-[#f2dbb5] text-left min-w-[100px]">
                       राशि
                     </th>
                     <th className="py-3 px-4 border border-[#f2dbb5] text-left">
@@ -297,7 +340,7 @@ const DonationsTable = () => {
                         <td className="py-2 px-4 border border-[#f2dbb5]">
                           {row.name}
                         </td>
-                        <td className="py-2 px-2 border border-[#f2dbb5] text-green-700 font-semibold">
+                        <td className="py-2 px-4 min-w-[100px] border border-[#f2dbb5] text-green-700 font-semibold">
                           ₹ {row.amount}
                         </td>
                         <td className="py-2 px-4 border border-[#f2dbb5] text-red-600 font-semibold">
