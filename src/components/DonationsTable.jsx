@@ -219,6 +219,7 @@ const DonationsTable = () => {
         return {
           roll_no: index + 1,
           name: `${member.name} ${member.last_name}`,
+          phone_no: member.phone_no,
           amount: donation,
           fine: fine,
         };
@@ -362,12 +363,15 @@ const DonationsTable = () => {
                     <th className="py-3 px-4 border border-[#f2dbb5] text-left">
                       सेवक का नाम
                     </th>
+                    <th className="py-3 px-4 border border-[#f2dbb5] text-left">
+                      फोन नंबर
+                    </th>
                     <th className="py-3 px-4 border border-[#f2dbb5] text-left min-w-[100px]">
                       राशि
                     </th>
-                    <th className="py-3 px-4 border border-[#f2dbb5] text-left">
+                    {/* <th className="py-3 px-4 border border-[#f2dbb5] text-left">
                       जुर्माना
-                    </th>
+                    </th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -386,12 +390,15 @@ const DonationsTable = () => {
                         <td className="py-2 px-4 border border-[#f2dbb5]">
                           {row.name}
                         </td>
+                        <td className="py-2 px-4 border border-[#f2dbb5]">
+                          {row.phone_no}
+                        </td>
                         <td className="py-2 px-4 min-w-[100px] border border-[#f2dbb5] text-green-700 font-semibold">
                           ₹ {row.amount}
                         </td>
-                        <td className="py-2 px-4 border border-[#f2dbb5] text-red-600 font-semibold">
+                        {/* <td className="py-2 px-4 border border-[#f2dbb5] text-red-600 font-semibold">
                           ₹ {row.fine}
-                        </td>
+                        </td> */}
                       </tr>
                     ))}
                 </tbody>
