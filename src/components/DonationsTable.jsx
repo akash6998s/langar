@@ -252,7 +252,7 @@ const DonationsTable = () => {
           </div>
         </div>
       )}
-      <div className="px-4 py-8 bg-[#fff7eb] min-h-screen">
+      <div className="px-2 py-8 bg-[#fff7eb] min-h-screen">
         {/* Header */}
         <h2 className="text-3xl font-bold text-center text-[#4b1c0d] mb-6 underline underline-offset-8 decoration-[#e3b04b]">
           सेवक दान विवरण
@@ -357,16 +357,16 @@ const DonationsTable = () => {
               <table className="w-full text-sm text-[#4b1c0d] border border-[#f2dbb5]">
                 <thead className="bg-[#fff1d0] sticky top-0 z-10 text-base">
                   <tr>
-                    <th className="py-3 px-2 border border-[#f2dbb5] text-left">
+                    <th className="py-3 px-1 border border-[#f2dbb5] text-center">
                       क्रम
                     </th>
-                    <th className="py-3 px-2 border border-[#f2dbb5] text-left">
+                    <th className="py-3 px-1 border border-[#f2dbb5] text-left">
                       सेवक का नाम
                     </th>
-                    <th className="py-3 px-2 border border-[#f2dbb5] text-left">
+                    <th className="py-3 px-1 border border-[#f2dbb5] text-center">
                       फोन नंबर
                     </th>
-                    <th className="py-3 px-2 border border-[#f2dbb5] text-left min-w-[80px]">
+                    <th className="py-3 px-1 border border-[#f2dbb5] text-center min-w-[80px]">
                       राशि
                     </th>
                     {/* <th className="py-3 px-4 border border-[#f2dbb5] text-left">
@@ -382,18 +382,18 @@ const DonationsTable = () => {
                     .map((row) => (
                       <tr
                         key={row.roll_no}
-                        className="hover:bg-[#fff8e3] transition duration-150"
+                        className="hover:bg-[#fff8e3] transition  duration-150"
                       >
-                        <td className="py-2 px-2 border border-[#f2dbb5]">
+                        <td className="py-2 px-1 border text-center border-[#f2dbb5]">
                           {row.roll_no}
                         </td>
-                        <td className="py-2 px-2 border border-[#f2dbb5]">
+                        <td className="py-2 px-1 border border-[#f2dbb5]">
                           {row.name}
                         </td>
-                        <td className="py-2 px-2 border border-[#f2dbb5]">
+                        <td className="py-2 px-1 text-center border border-[#f2dbb5]">
                           {row.phone_no}
                         </td>
-                        <td className="py-2 px-2 min-w-[80px] border border-[#f2dbb5] text-green-700 font-semibold">
+                        <td className="py-2 px-1 text-center min-w-[80px] border border-[#f2dbb5] text-green-700 font-semibold">
                           ₹ {row.amount}
                         </td>
                         {/* <td className="py-2 px-4 border border-[#f2dbb5] text-red-600 font-semibold">
