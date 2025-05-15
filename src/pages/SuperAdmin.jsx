@@ -4,6 +4,7 @@ import credentials from "../data/admin.json";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
+
 const SuperAdmin = () => {
   const monthNames = [
     "January",
@@ -613,23 +614,25 @@ const SuperAdmin = () => {
           {isOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white border border-orange-200 rounded-lg shadow-lg py-2">
               <Link
-                to="/expenses"
-                className="block px-5 py-2 text-sm text-[#92400e] hover:bg-[#FFF7E6] hover:text-[#7c2d12] transition"
-                onClick={() => setIsOpen(false)}
-              >
-                🧾 Expenses
-              </Link>
-              <Link
                 to="/donations"
                 className="block px-5 py-2 text-sm text-[#92400e] hover:bg-[#FFF7E6] hover:text-[#7c2d12] transition"
                 onClick={() => setIsOpen(false)}
               >
                 💰 Donations
               </Link>
+              <Link
+                to="/expenses"
+                className="block px-5 py-2 text-sm text-[#92400e] hover:bg-[#FFF7E6] hover:text-[#7c2d12] transition"
+                onClick={() => setIsOpen(false)}
+              >
+                🧾 Expenses
+              </Link>
             </div>
           )}
         </div>
       </div>
+
+      
 
       <div className="min-h-screen flex flex-col p-8 max-w-4xl mx-auto bg-white shadow-2xl space-y-10">
         {showModal && (

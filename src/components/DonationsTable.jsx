@@ -3,6 +3,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { FaDownload } from "react-icons/fa";
 import html2pdf from "html2pdf.js";
+import FinanceTable from "./FinanceTable"
 
 const DonationsTable = () => {
   const [donationData, setDonationData] = useState({});
@@ -344,6 +345,7 @@ const DonationsTable = () => {
           className="max-w-6xl mx-auto bg-white shadow-xl rounded-2xl border border-[#f0d8b0] overflow-hidden"
         >
           {/* Total Donations */}
+          <FinanceTable/>
           {tableData.length > 0 && (
             <div className="text-center bg-gradient-to-r from-[#fff4da] to-[#ffe6b3] py-5 px-4 text-[#4b1c0d] text-xl font-bold border-b-2 border-[#e0b973] shadow-md">
               इस महीने की कुल राशि:{" "}

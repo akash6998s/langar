@@ -39,11 +39,11 @@ const FinanceTable = ({ setLoading }) => {
       value: summaryData.totalDonations + additionalData + summaryData.totalFines,
       bgColor: "bg-gradient-to-r from-[#FFB900] to-[#FF6600]", // Gradient from gold to orange
     },
-    // {
-    //   title: "Total Expenses",
-    //   value: summaryData.totalExpenses,
-    //   bgColor: "bg-gradient-to-r from-[#9B2C2C] to-[#E53E3E]", // Gradient from rich red to dark red
-    // },
+    {
+      title: "Total Expenses",
+      value: summaryData.totalExpenses,
+      bgColor: "bg-gradient-to-r from-[#9B2C2C] to-[#E53E3E]", // Gradient from rich red to dark red
+    },
     {
       title: "Net Amount",
       value: summaryData.netAmount + additionalData,
@@ -52,12 +52,12 @@ const FinanceTable = ({ setLoading }) => {
   ];
 
   return (
-    <div className="mb-6">
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
+    <div className=" bg-white">
+    <div className="grid grid-col gap-4">
       {cardData.map((item, idx) => (
         <div
           key={idx}
-          className={`flex flex-col items-center justify-center ${item.bgColor} rounded-2xl shadow-xl p-5 sm:p-6 transform transition duration-300 hover:scale-[1.03] hover:shadow-2xl`}
+          className={`flex flex-col items-center justify-center ${item.bgColor} shadow-xl p-5 sm:p-6`}
         >
           <h3 className="text-lg sm:text-xl font-semibold text-white mb-2 sm:mb-4 tracking-wide text-center">
             {item.title}
@@ -69,8 +69,6 @@ const FinanceTable = ({ setLoading }) => {
       ))}
     </div>
   </div>
-  
-
   );
 };
 

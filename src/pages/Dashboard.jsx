@@ -109,10 +109,8 @@ export default function AttendanceTable() {
       ? getDaysInMonth(selectedYear, selectedMonth)
       : [];
 
-      
-
   return (
-    <div className="p-4 sm:p-6 bg-gradient-to-br min-h-screen">
+    <div className="p-4 sm:p-6 bg-gradient-to-br ">
       {/* Super Admin Button */}
       <div className="w-full flex justify-end mb-6 px-2">
         <div className="relative">
@@ -155,7 +153,6 @@ export default function AttendanceTable() {
       </h1>
 
       {/* Finance Table */}
-      <FinanceTable />
 
       {/* Navigation Tabs for Attendance, Expenses, and Donations */}
       {/* <div className="flex justify-center gap-2 mb-6 flex-wrap">
@@ -219,7 +216,7 @@ export default function AttendanceTable() {
 
       {/* Render Table Based on Active Tab and Filters */}
       {activeTab === "attendance" && selectedYear && selectedMonth ? (
-        <div className="overflow-x-auto overflow-y-auto max-h-[500px] shadow-lg rounded-lg bg-white">
+        <div className="overflow-x-auto overflow-y-auto h-[calc(100vh-300px)] shadow-lg rounded-lg bg-white">
           <table className="w-full text-sm text-center border border-gray-300 bg-white rounded-lg">
             <thead className="bg-orange-100 text-orange-800">
               <tr>
